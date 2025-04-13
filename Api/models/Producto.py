@@ -1,5 +1,5 @@
 from sqlalchemy import  Table , Column, Integer, String, LargeBinary, Double , ForeignKey
-from config.db import metaDatos
+from config.db import metaDatos , engine
 
 Producto = Table("Producto" , metaDatos ,
          Column("IDProducto" , Integer , primary_key=True) ,
@@ -10,3 +10,4 @@ Producto = Table("Producto" , metaDatos ,
          Column("Fecha_hora_subida" , String(250)) , 
          Column("Categoria" , String(250)) , 
          Column("IdUsuario" , Integer , ForeignKey("Usuario.IDUsuario")) )
+metaDatos.create_all(engine)

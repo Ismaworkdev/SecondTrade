@@ -1,9 +1,10 @@
 from sqlalchemy import  Table , Column, Integer, String, LargeBinary, Double , ForeignKey , Date
-from config.db import metaDatos
+from config.db import metaDatos ,engine
 
-Producto = Table("Mensaje" , metaDatos ,
+Mensaje = Table("Mensaje" , metaDatos ,
          Column("IDMensaje" , Integer , primary_key=True) ,
-         Column("IDConversacion" , Integer  , ForeignKey("Conversacion.IDConversacion") ) ,
          Column("FechayHora" , Date) , 
-         Column("IDUsuario" , String(250)) , 
+         Column("IDUsuario" , Integer , ForeignKey("Usuario.IDUsuario") ) ,
+         Column("IDProducto" , Integer , ForeignKey("Producto.IDProducto") ) , 
          Column("Mensaje" , String(250)) )
+metaDatos.create_all(engine)

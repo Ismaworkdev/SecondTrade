@@ -1,8 +1,9 @@
 
 from fastapi import APIRouter
-
+from config.db import conexion
+from models.Usuario import Usuario as UsuarioModel
 Usuario = APIRouter()
 
-@Usuario.get("/users")
-def hello_usuario():
-    return {"message": "Hello lol"}
+@Usuario.get("/Usuario")
+def get_Users():
+    return conexion.execute(UsuarioModel.select()).fetchall()

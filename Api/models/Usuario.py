@@ -1,5 +1,5 @@
 from sqlalchemy import  Table , Column, Integer, String, LargeBinary
-from config.db import metaDatos
+from config.db import metaDatos , engine
 
 Usuario = Table("Usuario" , metaDatos ,
          Column("IDUsuario" , Integer , primary_key=True) ,
@@ -11,7 +11,9 @@ Usuario = Table("Usuario" , metaDatos ,
          Column("Calle" , String(250)) ,
          Column("Ciudad/Pueblo" , String(250)) ,
          Column("Provincia" , String(250)) ,
-          Column("Region_Militar" , String(250)) ,
+          Column("Region" , String(250)) ,
           Column("Codigo_postal" , String(250)), 
          Column("Fecha_nacimiento" , String(250)) ,
           Column("ImgPerfil" ,LargeBinary, nullable=True)  )
+
+metaDatos.create_all(engine)
