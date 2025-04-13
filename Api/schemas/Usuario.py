@@ -15,3 +15,5 @@ class Usuario(BaseModel):
     Direccion: str
     Imagen_perfil: Optional[bytes] = None
 
+    class Config:
+        orm_mode = True
