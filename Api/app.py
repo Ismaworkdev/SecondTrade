@@ -8,8 +8,8 @@ from routes.ImagenProducto import ImagenProducto
 from routes.Conversacion import Conversacion
 from routes.Mensaje import Mensaje
 app = FastAPI()
-metaDatos.drop_all(bind=engine)
-metaDatos.create_all(bind=engine)
+#metaDatos.drop_all(bind=engine)
+#metaDatos.create_all(bind=engine)
 app.include_router(Usuario)
 app.include_router(Producto)
 app.include_router(ProductoFavorito)

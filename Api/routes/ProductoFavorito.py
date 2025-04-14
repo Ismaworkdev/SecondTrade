@@ -4,5 +4,5 @@ from models.ProductoFavorito import ProductoFavorito as ProductoFavoritoModel
 ProductoFavorito = APIRouter()
 
 @ProductoFavorito.get("/ProductoFavorito")
-def get_ProductoFavorito():
+def getProductoFavorito():
     return conexion.execute(ProductoFavoritoModel.select()).fetchall()

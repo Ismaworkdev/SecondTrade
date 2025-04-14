@@ -2,7 +2,7 @@ from sqlalchemy import  Table , Column, Integer, String, LargeBinary, Double , F
 from config.db import metaDatos , engine
 
 Producto = Table("Producto" , metaDatos ,
-         Column("IDProducto" , Integer , primary_key=True) ,
+         Column("IDProducto" , Integer , primary_key=True , autoincrement=True) ,
          Column("Precio" , Double ) ,
          Column("Titulo" , String(250)) , 
          Column("Descripcion" , String(250)) , 

@@ -4,16 +4,21 @@ from datetime import date
 from pydantic.networks import EmailStr
 
 class Usuario(BaseModel):
-    IDUsuario: Optional[int]
+    IDUsuario: Optional[int] = None
     Nombre: str
-    Apellido: str
-    Correo: EmailStr
+    Apellidos: str
+    Gmail: EmailStr
     Contrasena: str
     Telefono: str
+    Calle : str
+    Ciudad_Pueblo : str
+    Provincia: str
+    Region: str
+    Codigo_postal: str
     Fecha_nacimiento: date
-    Ciudad: str
-    Direccion: str
-    Imagen_perfil: Optional[bytes] = None
+
+    ImgPerfil: Optional[bytes] = None
+
 
     class Config:
-        orm_mode = True
+        orm_mode = True 
