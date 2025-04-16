@@ -5,7 +5,7 @@ from models.Usuario import Usuario as UsuarioModel
 from schemas.Usuario import Usuario as UsuarioSchema
 from cryptography.fernet import Fernet
 from pydantic.networks import EmailStr
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR , HTTP_200_OK
 Usuario = APIRouter()
 
 Unique_key = Fernet.generate_key()
@@ -81,5 +81,14 @@ def putUser(Gmail: EmailStr, user: UsuarioSchema):
 
 
 @Usuario.delete("/Usuario/{Gmail}")
-
-  
+def deleteUser(Gmail: EmailStr):
+    if getGmailUser(Gmail) == {}:
+        return Response(status_code=HTTP_204_NO_CONTENT)
+    else:
+        try:
+            conexion.execute(UsuarioModel.delete().where(UsuarioModel.c.Gmail == Gmail))
+            conexion.commit()
+            return Response(status_code=HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response(status_code=HTTP_400_BAD_REQUEST)
