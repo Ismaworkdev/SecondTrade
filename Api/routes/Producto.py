@@ -14,3 +14,7 @@ def getProducto():
 @route.get("/{IDProducto}")
 def getIdProducto(IDProducto: int):
     return ProductoController.getIdProducto(IDProducto)
+
+@route.post("/")
+def postProducto(producto: ProductoSchema):
+    return ProductoController.postProducto(producto)
