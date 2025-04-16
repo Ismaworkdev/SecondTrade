@@ -1,6 +1,7 @@
 
 from fastapi import APIRouter , Response
 from schemas.Usuario import Usuario as UsuarioSchema
+from schemas.Usuario import CambiarContrasena as CambiarContrasenaSchema
 from pydantic.networks import EmailStr
 from controllers.Usuario import UsuarioController
 route = APIRouter()
@@ -24,6 +25,9 @@ def postUser(user: UsuarioSchema):
 def putUser(Gmail: EmailStr, user: UsuarioSchema):
     return UsuarioController.putUser(Gmail, user)
 
+@route.put("/CambiarContrasena/{Gmail}")
+def CambiarContrasena(Gmail: EmailStr, user: CambiarContrasenaSchema):
+    return UsuarioController.CambiarContrasena(Gmail, user)
 
 
 

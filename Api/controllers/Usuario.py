@@ -74,7 +74,27 @@ class UsuarioController :
       except Exception as e:
         print(e)
         return Response(status_code=HTTP_400_BAD_REQUEST)
-      
+
+
+  def CambiarContrasena(Gmail , user) :
+            if UsuarioController.getGmailUser(Gmail) == {}:
+                return Response(status_code=HTTP_204_NO_CONTENT)
+            else:   
+                try:
+                    userAntigua = UsuarioController.getGmailUser(Gmail)["Contrasena"]
+                    if Fernet(UsuarioController.Unique_key).decrypt(userAntigua.encode("utf-8")).decode("utf-8") != user.Contrasena_antigua:
+                        return Response(status_code=HTTP_400_BAD_REQUEST)
+                    else:
+                        new_user = {
+                            "Contrasena": UsuarioController.function_Fernet.encrypt(user.Contrasena_Nueva.encode("utf-8"))
+                        }
+                        conexion.execute(UsuarioModel.update().values(new_user).where(UsuarioModel.c.Gmail == Gmail))
+                        conexion.commit()
+                        return Response(status_code=HTTP_200_OK)
+                except Exception as e:
+                    print(e)
+                    return Response(status_code=HTTP_400_BAD_REQUEST)  
+    
 
   def deleteUser(Gmail):
     if UsuarioController.getGmailUser(Gmail) == {}:
