@@ -1,8 +1,16 @@
 from fastapi import APIRouter
 from config.db import conexion
 from models.Producto import Producto as ProductoModel
-Producto = APIRouter()
+from schemas.Producto import Producto as ProductoSchema
+from controllers.Producto import ProductoController
+route = APIRouter()
+namespace = "Producto"
 
-@Producto.get("/Producto")
+
+@route.get("/")
 def getProducto():
-    return conexion.execute(ProductoModel.select()).fetchall()
+    return ProductoController.getProducto()
+
+@route.get("/{IDProducto}")
+def getIdProducto(IDProducto: int):
+    return ProductoController.getIdProducto(IDProducto)

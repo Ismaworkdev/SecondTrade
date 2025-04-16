@@ -96,6 +96,9 @@ class UsuarioController :
                     return Response(status_code=HTTP_400_BAD_REQUEST)  
     
 
+
+
+
   def deleteUser(Gmail):
     if UsuarioController.getGmailUser(Gmail) == {}:
         return Response(status_code=HTTP_204_NO_CONTENT)
