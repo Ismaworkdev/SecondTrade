@@ -9,5 +9,5 @@ Producto = Table("Producto" , metaDatos ,
          Column("Estado" , String(250)) , 
          Column("Fecha_hora_subida" , String(250)) , 
          Column("Categoria" , String(250)) , 
-         Column("IdUsuario" , Integer , ForeignKey("Usuario.IDUsuario")) )
+         Column("IDUsuario" , Integer , ForeignKey("Usuario.IDUsuario")) )
 metaDatos.create_all(engine)

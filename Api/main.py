@@ -3,8 +3,8 @@ from config.db import engine, metaDatos
 from routes import router
 
 app = FastAPI()
-#metaDatos.drop_all(bind=engine)
-#metaDatos.create_all(bind=engine)
+metaDatos.drop_all(bind=engine)
+metaDatos.create_all(bind=engine)
 app.include_router(router)
 
 

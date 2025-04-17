@@ -16,6 +16,10 @@ def getUsers():
 @route.get("/Gmail/{Gmail}")
 def getGmailUser(Gmail: EmailStr):
        return UsuarioController.getGmailUser(Gmail)
+   
+@route.get("/IDUsuario/{IDUsuario}")
+def getIDUsuario(IDUsuario: int):
+       return UsuarioController.getIDUsuario(IDUsuario)
 
 @route.post("/")
 def postUser(user: UsuarioSchema):

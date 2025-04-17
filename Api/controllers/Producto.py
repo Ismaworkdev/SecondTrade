@@ -12,21 +12,23 @@ class ProductoController:
         resul = conexion.execute(ProductoModel.select().where(ProductoModel.c.IDProducto == IDProducto)).mappings().first()
         objeto = dict(resul) if resul else {}
         return objeto
+    
     def postProducto(producto):
         new_producto = {
+            "IDProducto": producto.IDProducto,
             "Precio": producto.Precio,
             "Titulo": producto.Titulo,
             "Descripcion": producto.Descripcion,
             "Estado": producto.Estado,
             "Fecha_hora_subida": producto.Fecha_hora_subida,
             "Categoria": producto.Categoria,
-            "IdUsuario": producto.IdUsuario
+            "IDUsuario": producto.IDUsuario
         }
 
             
         try:
-            if UsuarioController.getGmailUser(producto.IdUsuario) == {}:
-              return Response(status_code=400)
+            if UsuarioController.getIDUsuario(producto.IDUsuario) != {}:
+              return Response(status_code=400 , content="El IDUsuario no existe")
             else:
              conexion.execute(ProductoModel.insert().values(new_producto))
              conexion.commit()

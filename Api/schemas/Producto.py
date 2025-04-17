@@ -5,13 +5,13 @@ from datetime import date
 class Producto(BaseModel):
     IDProducto: Optional[int]
     IDUsuario: int
-    Nombre: str
+    Titulo : str
     Descripcion: str
+    Estado: str
+    Fecha_hora_subida: str
     Precio: float
-    Fecha_publicacion: date
-    Imagen_producto: Optional[bytes] = None
     Categoria: str
-    Ciudad: str
+
 
     class Config:
         orm_mode = True

@@ -110,3 +110,8 @@ class UsuarioController :
         except Exception as e:
             print(e)
             return Response(status_code=HTTP_400_BAD_REQUEST)
+  
+  def getIDUsuario(IDUsuario):
+    resul = conexion.execute(UsuarioModel.select().where(UsuarioModel.c.IDUsuario == IDUsuario)).mappings().first()
+    objeto = dict(resul) if resul else {}
+    return objeto        
