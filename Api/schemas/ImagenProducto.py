@@ -3,10 +3,18 @@ from pydantic import BaseModel
 from datetime import date
 
 class ImagenProducto(BaseModel):
-    IDImagenProducto: Optional[int]
+    IDImagen: Optional[int]
     IDProducto: int
-    Imagen: bytes
-    Fecha_subida: date
+    Img: bytes
+    
+
+    class Config:
+        orm_mode = True
+        
+        
+class EditImage(BaseModel):
+    IDImagen: Optional[int]
+    Img: Optional[bytes]
 
     class Config:
         orm_mode = True

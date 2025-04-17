@@ -18,3 +18,12 @@ def getIdProducto(IDProducto: int):
 @route.post("/")
 def postProducto(producto: ProductoSchema):
     return ProductoController.postProducto(producto)
+
+@route.put("/{IDProducto}")
+def putProducto(IDProducto: int, producto: ProductoSchema):
+    return ProductoController.putProducto(IDProducto, producto)
+
+@route.delete("/{IDProducto}")
+def deleteProducto(IDProducto: int):
+    return ProductoController.deleteProducto(IDProducto)
+
