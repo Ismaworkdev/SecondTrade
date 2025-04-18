@@ -11,7 +11,7 @@ namespace = "ImagenProducto"
 def getImagenes():
     return ImagenProductoController.getImagenes()
 
-@route.get("/IDProducto/{IDImagen}")
+@route.get("/IDProducto/{IDProducto}")
 def getImagesOfProducto(IDProducto: int):
     return ImagenProductoController.getImagesOfProducto(IDProducto)
 

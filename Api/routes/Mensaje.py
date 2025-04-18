@@ -2,8 +2,8 @@
 from fastapi import APIRouter
 from config.db import conexion
 from models.Mensaje import Mensaje as MensajeModel
-Mensaje = APIRouter()
+from schemas.Mensaje import Mensaje as MensajeSchema
 
-@Mensaje.get("/Mensaje")
-def getMensaje():
-    return conexion.execute(MensajeModel.select()).fetchall()
+route = APIRouter()
+namespace = "Mensaje"
+
