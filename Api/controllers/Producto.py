@@ -27,7 +27,7 @@ class ProductoController:
 
             
         try:
-            if UsuarioController.getIDUsuario(producto.IDUsuario) != {}:
+            if UsuarioController.getIDUsuario(producto.IDUsuario) == {}:
               return Response(status_code=400 ,content="El IDUsuario no existe")
             else:
              conexion.execute(ProductoModel.insert().values(new_producto))

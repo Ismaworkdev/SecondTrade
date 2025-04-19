@@ -1,12 +1,11 @@
-from typing import Optional
 from pydantic import BaseModel
-from datetime import date
+from typing import Optional
 
-class Conversacion(BaseModel):      
+class Conversacion(BaseModel):
     IDConversacion: Optional[int]
+    IDUsuarioComprador: int
+    IDUsuarioVendedor: int
     IDProducto: int
-    IDUsuario: int
-    Fecha_inicio: date
 
     class Config:
         orm_mode = True

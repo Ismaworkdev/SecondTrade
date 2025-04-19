@@ -3,10 +3,10 @@ from pydantic import BaseModel
 from datetime import date
 
 class Mensaje(BaseModel):   
-    IDMensaje: Optional[int]
+    IDMensaje: Optional[int] = None
     FechayHora: date
-    IDUsuario: int
-    IDProducto: int
+    IDUsuario: int  # Remitente
+    IDConversacion: int
     Mensaje: str
 
     class Config:
