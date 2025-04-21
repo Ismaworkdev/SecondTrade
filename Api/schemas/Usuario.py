@@ -51,5 +51,20 @@ class CambiarContrasena(BaseModel):
         return contrasena
 
 
+class InicioSesion(BaseModel):
+    Gmail: EmailStr
+    Contrasena: str = Field(min_length=8)
+
+    @field_validator("Contrasena")
+    @classmethod
+    def validateContrasena(cls, contrasena: str) -> str:
+        
+  
+        if len(contrasena) < 8:
+            raise ValueError("La contraseña debe tener al menos 8 caracteres.")
+        if not any(char.isdigit() for char in contrasena):
+            raise ValueError("La contraseña debe contener al menos un número.")
+        return contrasena
+
 class Config:
       orm_mode = True 

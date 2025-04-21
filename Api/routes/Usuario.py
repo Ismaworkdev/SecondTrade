@@ -2,6 +2,7 @@
 from fastapi import APIRouter , Response
 from schemas.Usuario import Usuario as UsuarioSchema
 from schemas.Usuario import CambiarContrasena as CambiarContrasenaSchema
+from schemas.Usuario import InicioSesion as InicioSesionSchema
 from pydantic.networks import EmailStr
 from controllers.Usuario import UsuarioController
 route = APIRouter()
@@ -24,6 +25,11 @@ def getIDUsuario(IDUsuario: int):
 @route.post("/")
 def postUser(user: UsuarioSchema):
     return UsuarioController.postUser(user)
+
+@route.post("/InicioSesion")
+def InicioSesion(user: InicioSesionSchema):
+    return UsuarioController.InicioSesion(user)
+
 
 @route.put("/{Gmail}")
 def putUser(Gmail: EmailStr, user: UsuarioSchema):

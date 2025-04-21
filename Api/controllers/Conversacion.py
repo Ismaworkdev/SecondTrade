@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from config.db import conexion
+from starlette.status import HTTP_201_CREATED, HTTP_200_OK , HTTP_400_BAD_REQUEST
+from fastapi.responses import Response
 from models.Conversacion import Conversacion as ConversacionModel
 from schemas.Conversacion import Conversacion as ConversacionSchema
 from models.Producto import Producto as ProductoModel
@@ -13,7 +15,8 @@ class ConversacionController:
         ).first()
         
         if not UsuarioVendedor:
-            raise HTTPException(status_code=404, detail="Vendedor no encontrado para el producto.")
+            return Response(status_code=HTTP_400_BAD_REQUEST, content={"message": "Vendedor no encontrado para el producto."})
+            
         
         id_vendedor = UsuarioVendedor.IDUsuario  # Suponiendo que IDUsuario es el campo correcto
         
@@ -36,6 +39,6 @@ class ConversacionController:
                 )
             )
             conexion.commit()
-            return {"status": 201, "detail": "Created"}
+            return Response(status_code=HTTP_200_OK , content={"message": "Conversación creada correctamente"})
         
-        return {"status": 200, "detail": "La conversación ya existe", "IDConversacion": Existencia.IDConversacion}
+        return  Response(status_code=HTTP_200_OK , content={"message": "Conversación ya existe "})

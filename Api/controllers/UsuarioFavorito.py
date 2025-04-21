@@ -1,6 +1,7 @@
 from config.db import conexion
 from models.UsuarioFavorito import UsuarioFavorito as UsuarioFavoritoModel
-
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR , HTTP_200_OK
+from fastapi.responses import Response
 
 
 class UsuarioFavoritoController:
@@ -18,10 +19,10 @@ class UsuarioFavoritoController:
         try:
             conexion.execute(UsuarioFavoritoModel.insert().values(new_usuarioFavorito))
             conexion.commit()
-            return {"message": "Usuario Favorito agregado correctamente"}
+            return  Response(status_code=HTTP_200_OK , content={"message": "Usuario Favorito creado correctamente"})
         except Exception as e:
-            print(e)
-            return {"message": "Error al agregar Usuario Favorito"}
+            
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al crear el Usuario Favorito"})
         
         
     def deleteUsuarioFavorito(usuarioFavorito):
@@ -31,7 +32,7 @@ class UsuarioFavoritoController:
                 UsuarioFavoritoModel.c.IDProducto == usuarioFavorito.IDProducto
             ))
             conexion.commit()
-            return {"message": "Usuario Favorito eliminado correctamente"}
+            return Response(status_code=HTTP_200_OK , content={"message": "Usuario Favorito eliminado correctamente"})
         except Exception as e:
             print(e)
-            return {"message": "Error al eliminar Usuario Favorito"}    
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al eliminar el Usuario Favorito"})   
