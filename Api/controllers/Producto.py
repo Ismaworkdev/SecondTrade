@@ -2,18 +2,27 @@ from config.db import conexion
 from models.Producto import Producto as ProductoModel
 from fastapi.responses import  Response
 from controllers.Usuario import UsuarioController
+from controllers.Usuario import UsuarioController
 class ProductoController:
-    def getProducto():
-        resul = conexion.execute(ProductoModel.select()).fetchall()
-        lista = [dict(row._mapping) for row in resul]
-        return lista
+    def getProducto(current_user: dict):
+        if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+            return Response(status_code=400 ,content="El correo no existe")
+        else:
+         resul = conexion.execute(ProductoModel.select()).fetchall()
+         lista = [dict(row._mapping) for row in resul]
+         return lista
     
-    def getIdProducto(IDProducto):
-        resul = conexion.execute(ProductoModel.select().where(ProductoModel.c.IDProducto == IDProducto)).mappings().first()
-        objeto = dict(resul) if resul else {}
-        return objeto
+    def getIdProducto(IDProducto , current_user: dict):
+        if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+            return Response(status_code=400 ,content="El correo no existe")
+        else:
+         resul = conexion.execute(ProductoModel.select().where(ProductoModel.c.IDProducto == IDProducto)).mappings().first()
+         objeto = dict(resul) if resul else {}
+         return objeto
     
-    def postProducto(producto):
+    def postProducto(producto , current_user: dict):
+        if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+            return Response(status_code=400 ,content="El Usuario no existe")
         new_producto = {
             "IDProducto": producto.IDProducto,
             "Precio": producto.Precio,
@@ -22,7 +31,7 @@ class ProductoController:
             "Estado": producto.Estado,
             "Fecha_hora_subida": producto.Fecha_hora_subida,
             "Categoria": producto.Categoria,
-            "IDUsuario": producto.IDUsuario
+            "IDUsuario": current_user["id"]
         }
 
             
@@ -39,7 +48,9 @@ class ProductoController:
         
         
     
-    def putProducto(IDProducto, producto):
+    def putProducto(IDProducto, producto , current_user: dict):
+        if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+            return Response(status_code=400 ,content="El Usuario no existe")
         new_producto = {
             "IDProducto": producto.IDProducto,
             "Precio": producto.Precio,
@@ -48,7 +59,7 @@ class ProductoController:
             "Estado": producto.Estado,
             "Fecha_hora_subida": producto.Fecha_hora_subida,
             "Categoria": producto.Categoria,
-            "IDUsuario": producto.IDUsuario
+            "IDUsuario": current_user["id"]
         }
         try:
             if UsuarioController.getIDUsuario(producto.IDUsuario) != {}:

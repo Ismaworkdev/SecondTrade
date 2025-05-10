@@ -1,7 +1,8 @@
 
 from config.db import conexion
 from models.ProductoFavorito import ProductoFavorito as ProductoFavoritoModel
-
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR , HTTP_200_OK
+from fastapi.responses import Response
 
 class ProductoFavoritoController:
     
@@ -20,10 +21,10 @@ class ProductoFavoritoController:
         try:
             conexion.execute(ProductoFavoritoModel.insert().values(new_productoFavorito))
             conexion.commit()
-            return {"message": "Producto Favorito agregado correctamente"}
+            return Response(status_code=HTTP_200_OK , content={"message": "Producto Favorito creado correctamente"})
         except Exception as e:
             print(e)
-            return {"message": "Error al agregar Producto Favorito"}
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al crear el Producto Favorito"})
     
     def deleteProductoFavorito(productoFavorito):
         try:
@@ -32,7 +33,7 @@ class ProductoFavoritoController:
                 ProductoFavoritoModel.c.IDProducto == productoFavorito.IDProducto
             ))
             conexion.commit()
-            return {"message": "Producto Favorito eliminado correctamente"}
+            return Response(status_code=HTTP_200_OK , content={"message": "Producto Favorito eliminado correctamente"})
         except Exception as e:
             print(e)
-            return {"message": "Error al eliminar Producto Favorito"}    
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al eliminar el Producto Favorito"}) 

@@ -5,6 +5,7 @@ from schemas.Usuario import CambiarContrasena as CambiarContrasenaSchema
 from schemas.Usuario import InicioSesion as InicioSesionSchema
 from pydantic.networks import EmailStr
 from controllers.Usuario import UsuarioController
+from .auth import postUser as auth_postUser
 route = APIRouter()
 namespace = "Usuario"
 
@@ -24,11 +25,11 @@ def getIDUsuario(IDUsuario: int):
 
 @route.post("/")
 def postUser(user: UsuarioSchema):
-    return UsuarioController.postUser(user)
+    return auth_postUser(user)
 
-@route.post("/InicioSesion")
-def InicioSesion(user: InicioSesionSchema):
-    return UsuarioController.InicioSesion(user)
+#@route.post("/InicioSesion")
+#def InicioSesion(user: InicioSesionSchema):
+#    return UsuarioController.InicioSesion(user)
 
 
 @route.put("/{Gmail}")

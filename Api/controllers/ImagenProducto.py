@@ -2,7 +2,8 @@ from  models.ImagenProducto import ImagenProducto as ImagenProductoModel
 from config.db import conexion
 from schemas.ImagenProducto import ImagenProducto as ImagenProductoSchema
 from schemas.ImagenProducto import EditImage as EditImageSchema
-
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR , HTTP_200_OK
+from fastapi.responses import Response
 
 class ImagenProductoController:
     
@@ -29,14 +30,14 @@ class ImagenProductoController:
         try:
             conexion.execute(ImagenProductoModel.insert().values(new_imagen))
             conexion.commit()
-            return {"message": "Imagen guardada correctamente"}
+            return Response(status_code=HTTP_200_OK , content={"message": "Imagen guardada correctamente"})
         except Exception as e:
-            print(e)
-            return {"message": "Error al guardar la imagen"}
+           
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al guardar la imagen"})
         
     def putImagen( imagen: EditImageSchema):
         if ImagenProductoController.getImage(imagen.IDImagen) == {}:
-            return {"message": "No se encontró la imagen"}
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "No se encontró la imagen"})
         else:
             update_imagen = {
                 "Img": imagen.Img
@@ -44,19 +45,19 @@ class ImagenProductoController:
             try:
                 conexion.execute(ImagenProductoModel.update().values(update_imagen).where(ImagenProductoModel.c.IDImagen == IDImagen))
                 conexion.commit()
-                return {"message": "Imagen actualizada correctamente"}
+                return Response(status_code=HTTP_200_OK , content={"message": "Imagen actualizada correctamente"})
             except Exception as e:
-                print(e)
-                return {"message": "Error al actualizar la imagen"}    
+               
+                return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar la imagen"})
             
     def deleteImagen(IDImagen: int):
         if ImagenProductoController.getImage(IDImagen) == {}:
-            return {"message": "No se encontró la imagen"}
+            return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "No se encontró la imagen"})
         else:
             try:
                 conexion.execute(ImagenProductoModel.delete().where(ImagenProductoModel.c.IDImagen == IDImagen))
                 conexion.commit()
-                return {"message": "Imagen eliminada correctamente"}
+                return Response(status_code=HTTP_200_OK , content={"message": "Imagen eliminada correctamente"})
             except Exception as e:
-                print(e)
-                return {"message": "Error al eliminar la imagen"}        
+                
+                return Response(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al eliminar la imagen"})   
