@@ -34,7 +34,7 @@ class Usuario(BaseModel):
 
 
 class CambiarContrasena(BaseModel):
-    Gmail: EmailStr
+
 
     Contrasena_antigua: str = Field(min_length=8)
 
@@ -65,6 +65,24 @@ class InicioSesion(BaseModel):
         if not any(char.isdigit() for char in contrasena):
             raise ValueError("La contraseña debe contener al menos un número.")
         return contrasena
+
+class Updateuser(BaseModel):
+    Nombre: str
+    Apellidos: str
+    Gmail: EmailStr
+
+    Telefono: str
+    Calle : str
+    Ciudad_Pueblo : str
+    Provincia: str
+    Region: str
+    Codigo_postal: str
+    Fecha_nacimiento: date
+
+    ImgPerfil: Optional[bytes] = None
+
+
+
 
 class Config:
       orm_mode = True 

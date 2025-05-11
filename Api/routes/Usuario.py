@@ -1,11 +1,12 @@
 
-from fastapi import APIRouter , Response
+from fastapi import APIRouter , Response , Depends
 from schemas.Usuario import Usuario as UsuarioSchema
 from schemas.Usuario import CambiarContrasena as CambiarContrasenaSchema
 from schemas.Usuario import InicioSesion as InicioSesionSchema
+from schemas.Usuario import Updateuser as UpdateuserSchema
 from pydantic.networks import EmailStr
 from controllers.Usuario import UsuarioController
-from .auth import postUser as auth_postUser
+from .auth import postUser as auth_postUser , get_current_user
 route = APIRouter()
 namespace = "Usuario"
 
@@ -32,16 +33,16 @@ def postUser(user: UsuarioSchema):
 #    return UsuarioController.InicioSesion(user)
 
 
-@route.put("/{Gmail}")
-def putUser(Gmail: EmailStr, user: UsuarioSchema):
-    return UsuarioController.putUser(Gmail, user)
+@route.put("/")
+def putUser(user: UpdateuserSchema , current_user: dict = Depends(get_current_user)):
+    return UsuarioController.putUser(user, current_user)
 
-@route.put("/CambiarContrasena/{Gmail}")
-def CambiarContrasena(Gmail: EmailStr, user: CambiarContrasenaSchema):
-    return UsuarioController.CambiarContrasena(Gmail, user)
+@route.put("/CambiarContrasena/")
+def CambiarContrasena(user: CambiarContrasenaSchema ,  current_user: dict = Depends(get_current_user) ):
+    return UsuarioController.CambiarContrasena( user ,  current_user)
 
 
 
-@route.delete("/{Gmail}")
-def deleteUser(Gmail: EmailStr):
-    return UsuarioController.deleteUser(Gmail)
+@route.delete("/")
+def deleteUser(current_user: dict = Depends(get_current_user)):
+    return UsuarioController.deleteUser(current_user)

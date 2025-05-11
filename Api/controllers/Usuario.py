@@ -64,8 +64,8 @@ class UsuarioController :
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al crear el usuario"})  
 
 
-  def putUser(Gmail , user) : 
-    if UsuarioController.getGmailUser(Gmail) == {}:
+  def putUser( user , current_user: dict) : 
+    if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
     else:
       update_user = {
@@ -81,9 +81,8 @@ class UsuarioController :
         "Fecha_nacimiento": user.Fecha_nacimiento,
         "ImgPerfil": user.ImgPerfil
       }
-      update_user["Contrasena"] = UsuarioController.function_Fernet.encrypt(user.Contrasena.encode("utf-8"))
       try:
-        conexion.execute(UsuarioModel.update().values(update_user).where(UsuarioModel.c.Gmail == Gmail))
+        conexion.execute(UsuarioModel.update().values(update_user).where(UsuarioModel.c.Gmail == current_user["Gmail"]))
         conexion.commit()
         return JSONResponse(status_code=HTTP_200_OK , content={"message": "Usuario actualizado correctamente"})
       except Exception as e:
@@ -91,22 +90,25 @@ class UsuarioController :
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar el usuario"})
 
 
-  def CambiarContrasena(Gmail , user) :
-            if UsuarioController.getGmailUser(Gmail) == {}:
+  def CambiarContrasena( user , current_user: dict) :
+            if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
                 return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
             else:   
-                try:
-                    userAntigua = UsuarioController.getGmailUser(Gmail)["Contrasena"]
-                    if Fernet(UsuarioController.Unique_key).decrypt(userAntigua.encode("utf-8")).decode("utf-8") != user.Contrasena_antigua:
-                        return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "La contraseña antigua no es correcta"})
-                    else:
-                        new_user = {
-                            "Contrasena": UsuarioController.function_Fernet.encrypt(user.Contrasena_Nueva.encode("utf-8"))
-                        }
-                        conexion.execute(UsuarioModel.update().values(new_user).where(UsuarioModel.c.Gmail == Gmail))
-                        conexion.commit()
-                        return JSONResponse(status_code=HTTP_200_OK , content={"message": "Contraseña actualizada correctamente"})
-                except Exception as e:
+              try:
+                
+                 if not UsuarioController.bcrypt_context.verify(user.Contrasena_antigua, UsuarioController.getGmailUser(current_user["Gmail"])["Contrasena"]):
+                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "La contraseña antigua no es correcta"})
+                 else:
+                    updateContrasena = {
+                      
+                        "Contrasena": UsuarioController.bcrypt_context.hash(user.Contrasena_Nueva)
+                    }
+                    conexion.execute(UsuarioModel.update().values(updateContrasena).where(UsuarioModel.c.Gmail == current_user["Gmail"]))
+                    conexion.commit()
+                    return JSONResponse(status_code=HTTP_200_OK , content={"message": "Contraseña actualizada correctamente"})
+                
+                  
+              except Exception as e:
                    
                     return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar la contraseña"})  
     
@@ -114,12 +116,12 @@ class UsuarioController :
 
 
 
-  def deleteUser(Gmail):
-    if UsuarioController.getGmailUser(Gmail) == {}:
+  def deleteUser(current_user: dict):
+    if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
     else:
         try:
-            conexion.execute(UsuarioModel.delete().where(UsuarioModel.c.Gmail == Gmail))
+            conexion.execute(UsuarioModel.delete().where(UsuarioModel.c.Gmail == current_user["Gmail"]))
             conexion.commit()
             return JSONResponse(status_code=HTTP_200_OK , content={"message": "Usuario eliminado correctamente"})
         except Exception as e:
