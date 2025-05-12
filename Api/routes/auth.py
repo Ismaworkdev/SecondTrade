@@ -83,7 +83,9 @@ async def get_current_user(token: Annotated[str , Depends(oauth2_bearer)]):
             try:
               payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
               Gmail: str = payload.get("sub")
-              IDUsuario: int = payload.get("idIDUsuario")
+              IDUsuario: int = payload.get("id")
+              print(Gmail)
+              print(IDUsuario)
               if Gmail is None or IDUsuario is None:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authentication credentials", headers={"WWW-Authenticate": "Bearer"})
               return {"Gmail": Gmail, "id": IDUsuario}

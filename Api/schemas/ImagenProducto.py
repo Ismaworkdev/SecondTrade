@@ -4,8 +4,9 @@ from datetime import date
 
 class ImagenProducto(BaseModel):
     IDImagen: Optional[int]
+    img: bytes
     IDProducto: int
-    Img: bytes
+    
     
 
     class Config:
@@ -15,6 +16,14 @@ class ImagenProducto(BaseModel):
 class EditImage(BaseModel):
     IDImagen: Optional[int]
     Img: Optional[bytes]
+
+    class Config:
+        orm_mode = True
+        
+
+class DeleteImage(BaseModel):
+    IDImagen: Optional[int]
+    IDProducto: Optional[int]
 
     class Config:
         orm_mode = True
