@@ -4,7 +4,7 @@ from datetime import date
 
 class UsuarioFavorito(BaseModel):
     IDUsuarioGustado: Optional[int]
-    IDUsuario: int
+    
     Fecha_agregado: date
 
     class Config:
