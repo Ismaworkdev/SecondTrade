@@ -20,9 +20,7 @@ def getImagesOfProducto(IDProducto: int):
 def postImagen(imagen: ImagenProductoSchema , current_user: dict = Depends(get_current_user)):
     return ImagenProductoController.postImagen(imagen , current_user)
 
-@route.put("/")
-def putImagen(imagen: EditImageSchema , current_user: dict = Depends(get_current_user)):
-    return ImagenProductoController.putImagen( imagen , current_user)
+
 
 @route.delete("/")
 def deleteImagen(Image: DeleteImageSchema , current_user: dict = Depends(get_current_user)):

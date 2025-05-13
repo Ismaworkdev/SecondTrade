@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from datetime import date
 
 class ProductoFavorito(BaseModel):
-    IDUsuario: int
+    
     IDProducto: int
    
 
