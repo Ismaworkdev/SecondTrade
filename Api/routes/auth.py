@@ -54,7 +54,7 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
             detail="Incorrect Gmail or Contrasena",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    token = create_access_token(user.Gmail , user.IDUsuario , timedelta(minutes=60))
+    token = create_access_token(user.Gmail , user.IDUsuario , timedelta(minutes=5000))
     return {"access_token": token, "token_type": "bearer"}     
     
     

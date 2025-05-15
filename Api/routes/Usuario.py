@@ -34,7 +34,7 @@ def postUser(user: UsuarioSchema):
 
 
 @route.put("/")
-def putUser(user: UpdateuserSchema , current_user: dict = Depends(get_current_user)):
+def putUser(user: UsuarioSchema , current_user: dict = Depends(get_current_user)):
     return UsuarioController.putUser(user, current_user)
 
 @route.put("/CambiarContrasena/")
