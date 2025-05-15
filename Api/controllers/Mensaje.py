@@ -4,56 +4,63 @@ from models.Mensaje import Mensaje as MensajeModel
 from schemas.Mensaje import Mensaje as MensajeSchema
 from datetime import date
 from typing import Dict, List
-
+from fastapi.responses import JSONResponse
+from .Usuario import UsuarioController
 
 active_connections: Dict[int, List[WebSocket]] = {}
 
 class MensajeController:
 
-    def getMensajes(IDConversacion: int):
-        resul = conexion.execute(
-            MensajeModel.select().where(MensajeModel.c.IDConversacion == IDConversacion)
-        ).fetchall()
-        lista = [dict(row._mapping) for row in resul]
-        return lista
+    def getMensajes(IDConversacion: int , current_user: dict):
+        if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+            return JSONResponse(status_code=400 , content={"message": "Usuario no encontrado"})
+        else:
+            resul = conexion.execute(
+                MensajeModel.select().where(MensajeModel.c.IDConversacion == IDConversacion)
+            ).fetchall()
+            lista = [dict(row._mapping) for row in resul]
+            return lista
 
     @staticmethod
-    async def postMensaje(websocket: WebSocket, IDConversacion: int, IDUsuario: int):
-        await websocket.accept()
+    async def postMensaje(websocket: WebSocket, IDConversacion: int, current_user: dict):
+        if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+            return JSONResponse(status_code=400 , content={"message": "Usuario no encontrado"})
+        else:
+                    await websocket.accept()
 
-       
-        if IDConversacion not in active_connections:
-            active_connections[IDConversacion] = []
-        active_connections[IDConversacion].append(websocket)
+                
+                    if IDConversacion not in active_connections:
+                        active_connections[IDConversacion] = []
+                    active_connections[IDConversacion].append(websocket)
 
-        try:
-            while True:
-                data = await websocket.receive_text()
-                mensaje = MensajeSchema(
-                    IDConversacion=IDConversacion,
-                    IDUsuario=IDUsuario,
-                    Mensaje=data,
-                    FechayHora=date.today()
-                )
+                    try:
+                        while True:
+                            data = await websocket.receive_text()
+                            mensaje = MensajeSchema(
+                                IDConversacion=IDConversacion,
+                                IDUsuario=current_user["id"],
+                                Mensaje=data,
+                                FechayHora=date.today()
+                            )
 
-               
-                conexion.execute(
-                    MensajeModel.insert().values(
-                        IDConversacion=mensaje.IDConversacion,
-                        IDUsuario=mensaje.IDUsuario,
-                        Mensaje=mensaje.Mensaje,
-                        FechayHora=mensaje.FechayHora
-                    )
-                )
-                conexion.commit()
+                        
+                            conexion.execute(
+                                MensajeModel.insert().values(
+                                    IDConversacion=mensaje.IDConversacion,
+                                    IDUsuario=mensaje.IDUsuario,
+                                    Mensaje=mensaje.Mensaje,
+                                    FechayHora=mensaje.FechayHora
+                                )
+                            )
+                            conexion.commit()
 
-            
-                for connection in active_connections[IDConversacion]:
-                    await connection.send_text(f"Usuario {IDUsuario}: {mensaje.Mensaje}")
+                        
+                            for connection in active_connections[IDConversacion]:
+                                await connection.send_text(f"Usuario {current_user["id"]}: {mensaje.Mensaje}")
 
-        except WebSocketDisconnect:
-            print(f"Usuario {IDUsuario} se desconectó de la conversación {IDConversacion}")
-          
-            active_connections[IDConversacion].remove(websocket)
-            if not active_connections[IDConversacion]:
-                del active_connections[IDConversacion]
+                    except WebSocketDisconnect:
+                        print(f"Usuario {current_user["id"]} se desconectó de la conversación {IDConversacion}")
+                    
+                        active_connections[IDConversacion].remove(websocket)
+                        if not active_connections[IDConversacion]:
+                            del active_connections[IDConversacion]
