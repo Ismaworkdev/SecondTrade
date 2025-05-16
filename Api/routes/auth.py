@@ -15,7 +15,7 @@ from sqlalchemy import select
 import os
 from dotenv import load_dotenv , dotenv_values
 load_dotenv()
-router = APIRouter()
+route = APIRouter()
 namespace = "auth"
 SECRET_KEY = os.getenv("SECRET_KEY")  
   
@@ -44,7 +44,7 @@ def   postUser(user):
        return UsuarioController.postUser(user)
    
    
-@router.post("/token" , response_model=Token)
+@route.post("/token" , response_model=Token)
 async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency ):
     user = authenticate_user(db, form_data.username, form_data.password)
 

@@ -121,27 +121,27 @@ class UsuarioController :
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar el usuario"})
 
 
-  def CambiarContrasena( user , current_user: dict) :
-            if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
-                return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
-            else:   
-              try:
-                
-                 if not UsuarioController.bcrypt_context.verify(user.Contrasena_antigua, UsuarioController.getGmailUser(current_user["Gmail"])["Contrasena"]):
-                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "La contraseña antigua no es correcta"})
-                 else:
-                    updateContrasena = {
-                      
-                        "Contrasena": UsuarioController.bcrypt_context.hash(user.Contrasena_Nueva)
-                    }
-                    conexion.execute(UsuarioModel.update().values(updateContrasena).where(UsuarioModel.c.Gmail == current_user["Gmail"]))
-                    conexion.commit()
-                    return JSONResponse(status_code=HTTP_200_OK , content={"message": "Contraseña actualizada correctamente"})
-                
-                  
-              except Exception as e:
-                   
-                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar la contraseña"})  
+#  def CambiarContrasena( user , current_user: dict) :
+#            if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+#                return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
+#            else:   
+#              try:
+#                
+#                 if not UsuarioController.bcrypt_context.verify(user.Contrasena_antigua, UsuarioController.getGmailUser(current_user["Gmail"])["Contrasena"]):
+#                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "La contraseña antigua no es correcta"})
+#                 else:
+#                    updateContrasena = {
+#                      
+#                        "Contrasena": UsuarioController.bcrypt_context.hash(user.Contrasena_Nueva)
+#                    }
+#                    conexion.execute(UsuarioModel.update().values(updateContrasena).where(UsuarioModel.c.Gmail == current_user["Gmail"]))
+#                    conexion.commit()
+#                    return JSONResponse(status_code=HTTP_200_OK , content={"message": "Contraseña actualizada correctamente"})
+#                
+#                  
+#              except Exception as e:
+#                   
+#                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar la contraseña"})  
     
 
 
