@@ -86,7 +86,7 @@ class EmailController:
             <body>
                 <div class="email-container">
                     <div class="email-header">
-                         <h2 class="title">SecondTrade</h2>
+                        
                         <img src="cid:{logo_cid}" alt="Logo">
                     </div>
                     <div class="email-subject">{email_subject}</div>
