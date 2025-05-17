@@ -21,111 +21,102 @@ class EmailController:
          else:
                 #SecondTrade
 
-                email_remitente = os.getenv("Email")
-                password = os.getenv("Password")
-                
-                msg = EmailMessage()
-                msg['Subject'] = email.subject
-                msg['From'] = email_remitente
-                msg['To'] = email.email
-                msg.set_content(email.message)
-                logo_cid = make_msgid()[1:-1] 
+            email_remitente = os.getenv("Email")
+            password = os.getenv("Password")
 
-                
-                Page = """
-                <!DOCTYPE html>
-                    <html>
-                    <head>
-                    <meta charset="UTF-8">
-                    <title>Email</title>
-                    <style>
-                        body {
+            msg = EmailMessage()
+            msg['Subject'] = email.subject
+            msg['From'] = email_remitente
+            msg['To'] = email.email
+
+            # CID for the image
+            logo_cid = make_msgid()[1:-1]  # Remove < and >
+
+            email_subject = email.subject
+            email_message = email.message
+
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Email</title>
+                <style>
+                    body {{
                         font-family: Arial, sans-serif;
-                        background-color: #e6f0fa; /* fondo claro azul */
+                        background-color: #e6f0fa;
                         padding: 20px;
                         margin: 0;
-                        }
-                        .email-container {
-                        background-color: #ffffff;
+                    }}
+                    .email-container {{
+                        background: linear-gradient(to bottom, #58bcff, #ffffff);
                         max-width: 600px;
                         margin: 0 auto;
                         padding: 30px;
                         border-radius: 10px;
                         box-shadow: 0 2px 8px rgba(0, 85, 170, 0.1);
-                        border-top: 6px solid #007acc; /* línea superior azul */
-                        }
-                        .email-header {
+                    }}
+                    .email-header {{
+                        display: block;
+                        align-items: center;
+                        justify-content: space-around;
                         text-align: center;
                         margin-bottom: 30px;
-                        }
-                        .email-header img {
+                    }}
+                    .email-header img {{
                         max-width: 150px;
                         height: auto;
-                        }
-                        .email-subject {
+                    }}
+                    .email-subject {{
                         font-size: 22px;
                         font-weight: bold;
                         color: #005a99;
                         margin-bottom: 10px;
-                        }
-                        .email-remitente {
-                        font-size: 14px;
-                        color: #666;
-                        margin-bottom: 20px;
-                        }
-                        .email-message {
+                    }}
+                    .email-message {{
                         font-size: 16px;
                         color: #333;
                         line-height: 1.6;
-                        }
-
-                        @media (prefers-color-scheme: dark) {
-                        body {
-                            background-color: #0d1b2a;
-                        }
-                        .email-container {
-                            background-color: #1b2e4b;
-                            border-top: 6px solid #3399ff;
-                            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-                        }
-                        .email-subject {
-                            color: #66ccff;
-                        }
-                        .email-remitente, .email-message {
-                            color: #dddddd;
-                        }
-                        }
-                    </style>
-                    </head>
-                    <body>
-                    <div class="email-container">
-                        <div class="email-header">
+                    }}
+                      .title{{
+                        color: #000000;
+                      }}
+                </style>             
+            </head>
+            <body>
+                <div class="email-container">
+                    <div class="email-header">
+                         <h2 class="title">SecondTrade</h2>
                         <img src="cid:{logo_cid}" alt="Logo">
-                        </div>
-                        <div class="email-subject">{email.subject}</div>
-                        <div class="email-remitente">De: {email_remitente}</div>
-                        <div class="email-message">
-                        {email.message}
-                        </div>
                     </div>
-                    </body>
-                    </html>
+                    <div class="email-subject">{email_subject}</div>
+                    <br><br>
+                    <div class="email-message">
+                        {email_message}
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
 
-                
-                """
-                msg.set_content("Este es un correo HTML. Si no puedes verlo, activa la vista HTML.")
-                msg.add_alternative(Page, subtype='html')
-                with open("static/logo.png", 'rb') as img:
-                     msg.get_payload()[1].add_related(img.read(),
-                                     maintype='image',
-                                     subtype='png',
-                                     cid=f"<{logo_cid}>")
-                try:
-                    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-                        smtp.login(email_remitente, password)
-                        smtp.send_message(msg)
-                    return JSONResponse(status_code=HTTP_200_OK , content={"message": "Email enviado correctamente"})
-                except Exception as e:
-                    print(e)
-                    return JSONResponse(status_code=HTTP_500_INTERNAL_SERVER_ERROR , content={"message": "Error al enviar el email"})
+            msg.set_content("Este es un correo HTML. Si no puedes verlo, activa la vista HTML.")
+            msg.add_alternative(html_content, subtype='html')
+
+            # Attach image using CID
+            with open("static/logo.png", 'rb') as img:
+                msg.get_payload()[1].add_related(
+                    img.read(),
+                    maintype='image',
+                    subtype='png',
+                    cid=f"<{logo_cid}>"
+                )
+
+            try:
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                    smtp.login(email_remitente, password)
+                    smtp.send_message(msg)
+                return JSONResponse(status_code=HTTP_200_OK, content={"message": "Email enviado correctamente"})
+            except Exception as e:
+                print(e)
+                return JSONResponse(status_code=HTTP_500_INTERNAL_SERVER_ERROR, content={"message": "Error al enviar el email"})
 
