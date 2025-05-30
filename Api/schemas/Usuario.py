@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from datetime import date
 from pydantic.networks import EmailStr  
 from pydantic import field_validator , Field
+from base64 import b64encode
 
 class Usuario(BaseModel):
     IDUsuario: Optional[int] = None
@@ -18,7 +19,7 @@ class Usuario(BaseModel):
     Codigo_postal: str
     Fecha_nacimiento: date
 
-    ImgPerfil: Optional[bytes] = None
+    ImgPerfil: Optional[str] = None
     @field_validator("Contrasena")
     @classmethod
     def validateContrasena(cls, contrasena: str) -> str:

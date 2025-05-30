@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from datetime import date
 
 class ImagenProducto(BaseModel):
-    IDImagen: Optional[int]
-    img: bytes
+  
+    img: str  
     IDProducto: int
     
     

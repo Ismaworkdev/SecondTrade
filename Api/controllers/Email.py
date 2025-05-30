@@ -1,4 +1,4 @@
-from config.db import conexion
+
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR , HTTP_200_OK
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter , Response , Depends
@@ -15,8 +15,8 @@ from dotenv import load_dotenv , dotenv_values
 load_dotenv()
 class EmailController:
     
-    def send_email(email: EmailSchema , current_user: dict):
-         if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
+    def send_email(email: EmailSchema , current_user: dict , db):
+         if UsuarioController.getGmailUser(current_user["Gmail"] , db) == {}:
             return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
          else:
                 #SecondTrade

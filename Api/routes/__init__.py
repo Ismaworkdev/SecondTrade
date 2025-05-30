@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from routes import Usuario , Producto , Conversacion , Mensaje  , ImagenProducto , ProductoFavorito , UsuarioFavorito , auth , Email
+from routes import Usuario , Producto , Conversacion , Mensaje  , ImagenProducto , ProductoFavorito , UsuarioFavorito , auth , Email , Coordenadas
 
 router = APIRouter()
 
@@ -12,5 +12,6 @@ router.include_router(ProductoFavorito.route, prefix="/productofavorito", tags=[
 router.include_router(UsuarioFavorito.route, prefix="/usuarioFavorito", tags=["UsuarioFavorito"])
 router.include_router(auth.route, prefix="/auth", tags=["Auth"])
 router.include_router(Email.route, prefix="/email", tags=["Email"])
+router.include_router(Coordenadas.route, prefix="/Coordenadas", tags=["Coordenadas"])
 
 __all__ = ["router"]

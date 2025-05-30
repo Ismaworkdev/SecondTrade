@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from config.db import SessionLocal , conexion
+from config.db import SessionLocal 
 from models.Usuario import Usuario as UsuarioModel 
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -40,8 +40,8 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 
-def   postUser(user):
-       return UsuarioController.postUser(user)
+def   postUser(user , db):
+       return UsuarioController.postUser(user , db)
    
    
 @route.post("/token" , response_model=Token)
