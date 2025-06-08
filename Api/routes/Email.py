@@ -8,6 +8,6 @@ route = APIRouter()
 namespace = "Email"
 
 @route.post("/")
-def send_email(email: EmailSchema , current_user: dict = Depends(get_current_user) ,  db: Session = Depends(get_db)):
-     return EmailController.send_email(email , current_user)
+def send_email(email: EmailSchema  ,  db: Session = Depends(get_db)):
+     return EmailController.send_email(email  , db)
  

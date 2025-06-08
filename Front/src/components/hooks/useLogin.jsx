@@ -5,6 +5,7 @@ import  {UserLogeadoContext} from '../Context/UserLogeado'
 
 export const useLogin = () => {
       const navigate = useNavigate();
+       const [showPassword, setShowPassword] = useState(false);
     const { userLogeado, setUserLogeado } = useContext(UserLogeadoContext);
       const [redirect, setRedirect] = useState(false);
 
@@ -38,7 +39,7 @@ const handleChangeLogin = (event) => {
 
   
     if (name === "Gmail") {
-        if (value && /^[a-zA-Z0-9._%+-]+@gmail\.(com|es)$/.test(value.trim())) {
+        if (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|es)$/.test(value.trim())) {
            setErrors((prev) => ({
                 ...prev,
                  Gmail: false,
@@ -121,7 +122,7 @@ if (formDataLogin.Gmail.trim().length > 0 && formDataLogin.Contrasena.trim().len
 
 const postlogin = async (istrue) => {
     const { Gmail, Contrasena } = formDataLogin;
-    console.log(Gmail, Contrasena);
+   
         const form = new URLSearchParams();
         form.append("username", Gmail);
         form.append("password", Contrasena);
@@ -169,6 +170,6 @@ const redirigir = () => {
         setUnauthorized,
         setFormDataLogin,
         postlogin,
-        redirigir
+        redirigir , showPassword, setShowPassword
     }
 }

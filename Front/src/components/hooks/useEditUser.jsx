@@ -7,10 +7,13 @@ import { useLogout } from './useLogout';
 
 
 export const useEditUser = () => {
+        let defaul  = "data:image/png;base64,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"
+ const [showPassword, setShowPassword] = useState(false);
      const { logout } = useLogout();
-    const {userLogeado} = useContext(UserLogeadoContext)
+     const [done , setdone] = useState(false)
+    const {userLogeado ,getinfouser} = useContext(UserLogeadoContext)
     let token  = sessionStorage.getItem("token");
-    console.log(userLogeado)
+    
     
     const [write, setwrite] = useState(false);
     const [ Gmailexiste , setGmailexiste ] = useState({});
@@ -25,7 +28,7 @@ export const useEditUser = () => {
     Apellidos: userLogeado.Apellidos, 
     Gmail : userLogeado.Gmail ,
     Contrasena : userLogeado.Contrasena ,
-    ConfirmarContrasena : userLogeado.Contrasena ,
+    
     Telefono : userLogeado.Telefono ,
     Calle : userLogeado.Calle ,
     CiudadPueblo : userLogeado.Ciudad_Pueblo ,   
@@ -42,7 +45,7 @@ export const useEditUser = () => {
 
         Gmail : false ,
         Contrasena : false ,
-        ConfirmarContrasena : false ,
+       
         Telefono : false ,
       
         CiudadPueblo : false ,   
@@ -56,7 +59,7 @@ export const useEditUser = () => {
         Apellidos: true,
         Gmail : true ,
         Contrasena : true ,
-        ConfirmarContrasena : true ,
+      
         Telefono : true ,
         existe : true ,
         CiudadPueblo : true ,   
@@ -70,7 +73,7 @@ export const useEditUser = () => {
 
     
         const handleChangeEdit = (event) => {
-        
+        setwrite(true)
         const { name, value , files } = event.target;
         setformDataEdit((prev)=> ({
             ...prev,
@@ -79,7 +82,7 @@ export const useEditUser = () => {
 
         if (name === "Gmail") {
           
-         if (value && /^[a-zA-Z0-9._%+-]+@gmail\.(com|es)$/.test(value.trim())) {
+         if (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|es)$/.test(value.trim())) {
            setErrors((prev) => ({
                 ...prev,
                  Gmail: false,
@@ -105,19 +108,7 @@ export const useEditUser = () => {
             }));
         }
     }
-     if (name === "ConfirmarContrasena") {
-        if (value && value.length >= 8 && /[0-9]/.test(value)) {
-            setErrors((prev) => ({
-                ...prev,
-                ConfirmarContrasena: false,
-            }));
-        } else {
-            setErrors((prev) => ({
-                ...prev,
-                ConfirmarContrasena: true,
-            }));
-        }
-    }
+
     if (name === "Telefono") {
         if (value && value.length >= 9 && /^[0-9]+$/.test(value)) {
             setErrors((prev) => ({
@@ -163,9 +154,9 @@ export const useEditUser = () => {
      const handleSubmitEdit = async (event) => {
     event.preventDefault();
     
-    const {Nombre,Apellidos, Gmail ,  Contrasena ,  ConfirmarContrasena ,Telefono  ,Calle ,  CiudadPueblo ,Provincia ,Fecha_Nacimiento , ImgPerfil  } = formDataEdit;
+    const {Nombre,Apellidos, Gmail ,  Contrasena  ,Telefono  ,Calle ,  CiudadPueblo ,Provincia ,Fecha_Nacimiento , ImgPerfil  } = formDataEdit;
     let existe = await isregistered(Gmail)
-    console.log(existe)
+    
     
    
     if (existe.Gmail && existe.Gmail !== userLogeado.Gmail) {
@@ -214,17 +205,6 @@ export const useEditUser = () => {
 }));
     }
 
-if(errors.ConfirmarContrasena  ||    ConfirmarContrasena.trim().length == 0  ){
-   settextErrors((prev) => ({
-        ...prev,
-        ConfirmarContrasena: false,
-    }));
-    }else{
-   settextErrors((prev) => ({
-    ...prev,
-    ConfirmarContrasena: true,
-}));
-    }
 
     
 if(errors.Gmail  ||    Gmail.trim().length == 0  ){
@@ -290,18 +270,7 @@ if(errors.Provincia  ||    address.Provincia.trim().length == 0 ){
 }));
     }
 
-    if( ConfirmarContrasena != Contrasena && ConfirmarContrasena.trim().length < 5 ){
 
-      settextErrors((prev) => ({
-        ...prev,
-        compatible: false,
-    }));
-    }else{
-   settextErrors((prev) => ({
-    ...prev,
-    compatible: true,
-}));
-    }
 
     }
             const getAdress = async ()=>{
@@ -330,19 +299,12 @@ if(errors.Provincia  ||    address.Provincia.trim().length == 0 ){
 
 
     const putEdit = async (istrue)=>{
-    const {Nombre,Apellidos, Gmail ,  Contrasena ,  ConfirmarContrasena ,Telefono   ,Fecha_Nacimiento , ImgPerfil  } = formDataEdit;
+       
+    const {Nombre,Apellidos, Gmail ,  Contrasena  ,Telefono   ,Fecha_Nacimiento , ImgPerfil  } = formDataEdit;
     const {Calle , CiudadPueblo , Provincia , Pais} = address
 
     if (istrue) {
-        const toBase64FromUrl = (url) => 
-        fetch(url)
-            .then(response => response.blob())
-            .then(blob => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-            }));
+
 
         const toBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -351,14 +313,14 @@ if(errors.Provincia  ||    address.Provincia.trim().length == 0 ){
         reader.onerror = (error) => reject(error);
         });
 
+        try {
+           
      
-        // Si ImgPerfil está vacío, convierte la URL defaultUser
-        // Si no, convierte el archivo ImgPerfil
-        const base64Img = ImgPerfil == null 
-            ? userLogeado.ImgPerfil 
-            : await toBase64(ImgPerfil);           
-    try {
-        console.log("iiiiiiiiiii",base64Img)
+        const base64Img = !ImgPerfil  
+            ? userLogeado.ImgPerfil
+            : await toBase64(ImgPerfil);         
+   
+    
           const abjeto = {
                 Nombre: Nombre,
                 Apellidos: Apellidos,
@@ -373,7 +335,7 @@ if(errors.Provincia  ||    address.Provincia.trim().length == 0 ){
                 Fecha_nacimiento: Fecha_Nacimiento,
                 ImgPerfil: base64Img, 
                 };
-                console.log(abjeto)
+               
 
                 fetch('http://127.0.0.1:8000/usuario/', {
                 method: 'PUT',
@@ -386,13 +348,14 @@ if(errors.Provincia  ||    address.Provincia.trim().length == 0 ){
                 body: JSON.stringify(abjeto),
                 }).then((response) => {
                 if (response.ok) {
+                    setdone(true)
                 if (Gmail !== userLogeado.Gmail) {
                     logout();
                     
                 }
+                getinfouser()
                 }else {
-                    console.log(response)
-                console.log('Error en el registro');
+                   
                 }
 
 
@@ -410,12 +373,12 @@ if(errors.Provincia  ||    address.Provincia.trim().length == 0 ){
         useEffect(() => {
           const istrue = Object.values(texterrors).every(value => value === true);
           
-          console.log(texterrors)
+         
            
-          if (istrue ) {
-           
+          if (istrue  && write ) {
+           setdone(false)
             putEdit(istrue)
-            
+             
             }
         }, [texterrors]);
 
@@ -437,8 +400,8 @@ seaddress ,
 getAdress , 
 errors, setErrors , 
 isregistered ,
-    putEdit
-
+    putEdit , done ,
+showPassword, setShowPassword
      
 
 

@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { UserLogeadoContext } from '../Context/UserLogeado';
 export const Nav = () => {
   const { userLogeado } = useContext(UserLogeadoContext);
-  console.log(userLogeado)
+ 
   
   return (
     <>
-     <Link className="px-4 font-extrabold text-gray-500 hover:text-blue-900 flex align-middle fill-black hover:fill-blue-800" to="/home/buzon">
+  {userLogeado.IDUsuario !== 1 ? (
+   
+    <>
+         <Link className="px-4 font-extrabold text-gray-500 hover:text-blue-900 flex align-middle fill-black hover:fill-blue-800" to="/home/buzon">
     <p className='align-middle p-1.5'>Buzón</p> <svg className='w-8' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16l0 22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1l0-22.1c0-8.8-7.2-16-16-16L64 112zM48 212.2L48 384c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-171.8L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64l384 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 128z"/></svg>
     </Link>
     <Link className="px-4 font-extrabold text-gray-500 hover:text-blue-900 flex fill-black hover:fill-blue-800" to="/home/favorito">
@@ -20,12 +23,23 @@ export const Nav = () => {
     <Link className="text-white bg-blue-900 hover:bg-blue-800  items-center justify-center w-auto px-6 py-3 shadow-xl rounded-xl flex" to="/home/vender">
     <p className='align-middle p-1.5'>Vender</p> <svg className=' w-8'  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
     </Link>
-    <Link className="px-4 font-extrabold text-gray-500 hover:text-blue-900 flex fill-black hover:fill-blue-800" to="/home">
-    <p className='align-middle p-1.5'>Buscar</p> <svg className=' w-8' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+    </>
+  ) : (
+    
+    <>
+     <>
+
+    <Link className="px-4 font-extrabold text-gray-500 hover:text-blue-900 flex fill-gray-500 hover:fill-blue-800" to="/home/administrar">
+    <p className='align-middle p-1.5'>Administrar</p> <svg className=' w-8' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" ><path d="M290.7 57.4L57.4 290.7c-25 25-25 65.5 0 90.5l80 80c12 12 28.3 18.7 45.3 18.7L288 480l9.4 0L512 480c17.7 0 32-14.3 32-32s-14.3-32-32-32l-124.1 0L518.6 285.3c25-25 25-65.5 0-90.5L381.3 57.4c-25-25-65.5-25-90.5 0zM297.4 416l-9.4 0-105.4 0-80-80L227.3 211.3 364.7 348.7 297.4 416z"/></svg>
     </Link>
+    <Link className="px-4 font-extrabold text-gray-500 hover:text-blue-900 flex fill-black hover:fill-blue-800" to="/home/user">
+    <p className='align-middle pt-3 pr-1.5'> Tù </p> <img  className="w-16 h-16 rounded-full object-cover"  src={`data:image/jpeg;base64,${userLogeado.ImgPerfil}`} alt="Perfil" />
 
-
-
+    </Link>
+ 
+    </>
+  </>
+  )}
     </>
   )
 }

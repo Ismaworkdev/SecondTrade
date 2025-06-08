@@ -15,8 +15,8 @@ namespace = "Usuario"
 
 
 @route.get("/")
-def getUsers():
-    return UsuarioController.getUsers()
+def getUsers(current_user: dict = Depends(get_current_user) , db: Session = Depends(get_db)):
+    return UsuarioController.getUsers(current_user ,  db)
 
 @route.get("/getuser/")
 def getUserbyToken(token: dict = Depends(get_current_user) , db: Session = Depends(get_db)):
@@ -43,10 +43,13 @@ def postUser(user: UsuarioSchema , db: Session = Depends(get_db)):
 def putUser(user: UsuarioSchema , current_user: dict = Depends(get_current_user) , db: Session = Depends(get_db)):
     return UsuarioController.putUser(user, current_user , db)
 
-@route.put("/CambiarContrasena/")
-def CambiarContrasena(user: CambiarContrasenaSchema ,  current_user: dict = Depends(get_current_user) , db: Session = Depends(get_db)):
-    return UsuarioController.CambiarContrasena( user ,  current_user , db)
+@route.put("/CambiarContrasena/{Gmail}")
+def CambiarContrasena(  Gmail :str, db: Session = Depends(get_db)):
+    return UsuarioController.CambiarContrasena( Gmail , db)
 
+@route.delete("/{IDusuario}")
+def deleteUseradmin(IDusuario: int ,current_user: dict = Depends(get_current_user) , db: Session = Depends(get_db)):
+    return UsuarioController.deleteUseradmin( IDusuario , current_user , db)
 
 
 @route.delete("/")

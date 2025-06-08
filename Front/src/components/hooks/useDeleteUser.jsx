@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useLogout } from './useLogout'
 
 export const useDeleteUser = () => {
     const { logout } = useLogout()
+    const [isOpen , setIsOpen] = useState(false)
     let token = sessionStorage.getItem('token');
     const deleteuser = async () => {
         try {
                if (token) {
-                           //http://127.0.0.1:8000/usuario/
+                         
             const data = await fetch(`http://127.0.0.1:8000/usuario/`, {
             method: 'DELETE',
             headers: {
@@ -32,6 +33,6 @@ export const useDeleteUser = () => {
             console.error("Error deleting user:", error);
         }
     }
-  return {            deleteuser}
+  return {            deleteuser ,isOpen , setIsOpen}
 }
 

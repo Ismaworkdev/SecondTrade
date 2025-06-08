@@ -2,18 +2,20 @@ import { useState, useEffect , useContext  } from 'react'
 import {useImageProducto} from './useImageProducto'
 import {useEditImageProducto} from './useEditImageProducto'
 import { UserLogeadoContext } from '../Context/UserLogeado';
+import { Navigate ,useNavigate  } from 'react-router-dom';
 
 export const useEditProducto = ({ product  }) => {
   let token = sessionStorage.getItem('token')
+  const [done , setdone] = useState(null)
      const {  Imagenes , setImagenes  } = useContext(UserLogeadoContext);
-
-
-  
+  const [im , setim] = useState(true)
+ 
+    const navigate = useNavigate()
   const [formDataEditProducto, setformDataEditProducto] = useState({
-    Titulo: '',
-    Descripcion: '',
-    Precio: 0,
-    Categoria: '',
+    Titulo: product.Titulo,
+    Descripcion: product.Descripcion,
+    Precio: product.Precio,
+    Categoria: product.Categoria,
   })
       const [errors, setErrors] = useState({
         Titulo : false , 
@@ -101,7 +103,35 @@ export const useEditProducto = ({ product  }) => {
   }
 
   const handelSubmitEditProduct = async(event)=>{
+    setdone(false)
    event.preventDefault();
+
+   if (
+  formDataEditProducto.Titulo === '' ||
+  formDataEditProducto.Descripcion === '' ||
+  formDataEditProducto.Precio ==='' ||
+  formDataEditProducto.Categoria === ''
+) {
+  setErrors((prev) => ({
+    ...prev,
+    Titulo: formDataEditProducto.Titulo === '',
+    Descripcion: formDataEditProducto.Descripcion === '',
+    Precio: formDataEditProducto.Precio == '',
+    Categoria: formDataEditProducto.Categoria === '',
+  }));
+    settextErrors((prev) => ({
+    ...prev,
+    Titulo: formDataEditProducto.Titulo === '',
+    Descripcion: formDataEditProducto.Descripcion === '',
+    Precio: formDataEditProducto.Precio === '',
+    Categoria: formDataEditProducto.Categoria === '',
+  }));
+}else{
+
+
+
+
+
    if (errors.Titulo) {
         settextErrors((prev) => ({
             ...prev,
@@ -154,20 +184,25 @@ export const useEditProducto = ({ product  }) => {
         }));
    }
 const errores = Object.values(errors).every(value => value == false);
-console.log("sontodos falseo ??" ,errores)
-console.log(errors)
-console.log(product)
-if (errores) {
-   
-  await putProduct()
-  
-}
 
+if (errores) {
+   if (Imagenes.filter(img => img).length > 0) {
+            
+        setim(true)
+
+    await putProduct()
+
+  }else{
+  
+   setim(false)
+}
+}
+}
     
   }
 
   const putProduct = async ()=>{
-    console.log("çaaaaaaajajajajajajajjaajj")
+   
  const {Titulo ,Descripcion, Precio ,  Categoria  } = formDataEditProducto;
        
      
@@ -194,7 +229,7 @@ try {
                 body: JSON.stringify(objeto),
                 }).then(async (response) =>{
                   if (response.ok) {
-                    console.log("http://127.0.0.1:8000/imagenproducto/?IDProducto=2314")
+                      setdone(true)
                     await DeleteImages()
                     
                   }
@@ -202,7 +237,7 @@ try {
               
 
 } catch (error) {
-  console.log(error)
+  
 }
   }
   const DeleteImages =async  ()=>{
@@ -229,12 +264,13 @@ try {
 
   const EditImages = async ()=>{
 
-for (const element of Imagenes) {
-  console.log(Imagenes)
+
+  for (const element of Imagenes) {
+ 
     if (element && element.img) {
         const objetoImg = {
             img: element.img,
-            IDProducto: element.IDProducto
+            IDProducto : element.IDProducto
         };
 
         try {
@@ -247,10 +283,10 @@ for (const element of Imagenes) {
                 },
                 body: JSON.stringify(objetoImg),
             });
-            console.log(objetoImg)
+          
 
             if (response.ok) {
-                console.log("Imagen insertada correctamente");
+                  navigate(`/home/producto/${element.IDProducto}`, { replace: true })
             } else {
                 console.error("Error al insertar imagen:", response);
             }
@@ -262,6 +298,7 @@ for (const element of Imagenes) {
     
     }
 }
+
         
             
   }
@@ -279,5 +316,5 @@ for (const element of Imagenes) {
     
   }, [product , Imagenes])
 
-  return { formDataEditProducto , handelChangeRditProducto  , errors , handelSubmitEditProduct , texterrors}
+  return { formDataEditProducto , handelChangeRditProducto  , errors , handelSubmitEditProduct , texterrors , im , done}
 }

@@ -10,5 +10,5 @@ export const RedirectByAuth = ({ children }) => {
     return <Navigate to="/home" replace />;
   }
 
-  return children; // Renderiza <Login /> o <Register />
+  return children; 
 };

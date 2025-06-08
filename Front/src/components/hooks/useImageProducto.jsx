@@ -1,7 +1,8 @@
 import {useEffect, useContext, useState}from 'react';
 import { Link } from 'react-router-dom';
 
-export const useImageProducto = ({product}) => {
+export const useImageProducto = ({IDEP}) => {
+
  const [imageProductos , setImageProductos] = useState([]);
         const getImages = async (idProducto) => {
 if (idProducto) {
@@ -18,13 +19,13 @@ if (idProducto) {
 
     useEffect(() => {
         
-          if (product) {
-              getImages(product.IDProducto);
-            console.log(imageProductos)
+          if (IDEP) {
+              getImages(IDEP);
+          
           }
         
         
-    }, [product]);
+    }, [IDEP]);
 
   
 

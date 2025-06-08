@@ -1,10 +1,14 @@
 import  { useState , useEffect ,useContext} from 'react'
 import { UserLogeadoContext } from '../Context/UserLogeado';
+import { Navigate ,useNavigate  } from 'react-router-dom';
 export const useOneProduct = ({idProducto}) => {
     const [product , setproduct] = useState({})
     const token = sessionStorage.getItem('token');
     const [mg, setmg] = useState(false)
     const [show, setShow] = useState(false);
+    
+        const navigate = useNavigate()
+    
     const {userLogeado} = useContext(UserLogeadoContext)
 
             const getOnePrducto = async () => {
@@ -22,10 +26,10 @@ export const useOneProduct = ({idProducto}) => {
    
             if (data.IDUsuario == userLogeado.IDUsuario) {
                 setShow(true)
-                console.log(show)
+              
             }else{
                 setShow(false)
-                console.log(show)
+                
 
             }
                
@@ -52,7 +56,7 @@ export const useOneProduct = ({idProducto}) => {
                       }, body: JSON.stringify(abjeto),
                     }).then((resul)=> {
                       if(resul.ok){
-                          console.log("posteado correctamente")
+                         
                       }
                     })
               
@@ -65,7 +69,7 @@ export const useOneProduct = ({idProducto}) => {
                       }, body: JSON.stringify(abjeto),
                     }).then((resul)=> {
                       if(resul.ok){
-                          console.log("Elimiminado correctamente")
+                         
                       }
                     })
             }
@@ -88,17 +92,47 @@ export const useOneProduct = ({idProducto}) => {
         const data = await fetch(`http://localhost:8000/producto/${idProducto}`, {
           method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
         }).then((resul)=> 
         {
           if(resul.ok){
-            console.log("Eliminado correctamente")
+  navigate(`/home/user/`, { replace: true })
           }
         })
       }
+      const getMax = async ()=>{
+              const data = await fetch(`http://127.0.0.1:8000/conversacion/max/`, {
+                    method: 'GET',
+                     headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  }
+                    }).then((resul)=> resul.json())
+
+                    return data
+      }
+
+
  
+      const PostConver = async ()=>{
+              const data = await fetch(`http://127.0.0.1:8000/conversacion/?id_producto=${idProducto}`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${token}`
+                    }
+                  }).then(async (resul)=> {
+                    if(resul.ok){
+                
+                     navigate(`/home/buzon/`, { replace: true })
+                    
+                   
+                    
+                    }
+                  })
+      }
 
   
         
@@ -113,5 +147,5 @@ export const useOneProduct = ({idProducto}) => {
            
         }, [idProducto]);
 
-  return {product , mg , Postmg , show , deleteProducto}
+  return {product , mg , Postmg , show , deleteProducto , PostConver}
 }

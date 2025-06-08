@@ -1,5 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { useuserMini } from '../hooks/useuserMini'
+import { Link } from 'react-router-dom'
 
 export const UserMini = ({idU}) => {
 
@@ -7,7 +8,8 @@ const {User , mg , Postmg } = useuserMini({idU})
 
 
 return (
- <div className="bg-gray-100 p-4 rounded-2xl shadow-md ">
+<div className="bg-gray-100 p-4 rounded-2xl shadow-md w-full max-w-full min-w-[100%] mt-4">
+
   <div className="flex items-center gap-4">
     <img
       className="w-16 h-16 rounded-full object-cover border-2 border-blue-900"
@@ -15,7 +17,11 @@ return (
       alt="Perfil"
     />
     <div className='justify-end text-end w-full'>
-      <p className="text-lg text-end font-semibold text-blue-900">{User.Nombre}</p>
+<div>
+        <Link 
+      to={`/home/user/${User.IDUsuario}`} className="underline text-lg text-end font-semibold text-blue-900">{User.Nombre}
+      </Link>
+</div>
       <a href={`https://www.google.es/maps/place/${User.Ciudad_Pueblo}, ${User.Region}`}     
       target="_blank"   
       rel="noopener noreferrer"     

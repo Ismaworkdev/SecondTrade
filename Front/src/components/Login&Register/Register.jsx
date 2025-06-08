@@ -3,10 +3,10 @@ import { Navigate, useNavigate  , Link  } from "react-router-dom";
 import { MapContainer, TileLayer, useMapEvents, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { Eye, EyeOff } from 'lucide-react';
 import { useRegister } from '../hooks/useRegister';
 import defaultUser from '../../assets/default_user.jpg';
-
-
+import { TaskHecho } from '../../Pages/TaskHecho';
 export const Register = () => {
          const {   
      formDataRegister,
@@ -24,8 +24,9 @@ export const Register = () => {
     errors, 
     setErrors , 
     isregistered ,
-    postRegister
-         } = useRegister();
+    postRegister , 
+    registed
+        ,  showPassword, setShowPassword  } = useRegister();
 
         delete L.Icon.Default.prototype._getIconUrl;
         L.Icon.Default.mergeOptions({
@@ -59,6 +60,7 @@ export const Register = () => {
   return (
 
 <div className="flex justify-center items-center mt-8 w-full  py-12 lg:py-24">
+    {registed != null && registed == true && <TaskHecho mensaje="Registrado Correctamente " />}
   <div className="w-full max-w-7xl mx-auto my-8 px-4 lg:px-8" data-aos="zoom-in">
     <form noValidate onSubmit={handleSubmitRegister}>
       <div className="w-full bg-white p-8 my-4 md:px-12 lg:px-20 rounded-2xl shadow-2xl">
@@ -92,7 +94,7 @@ export const Register = () => {
                                         placeholder="Nombre*" 
                                         value={formDataRegister.Nombre}
                                         onChange={handleChangeRegister}
-                                        //onKeyUp={clearErrors}
+                                  
                                     />
                                   
                                          <p className="text-red-500 text-sm">{!texterrors.Nombre ? 'Nombre invalido ' : ''}</p>
@@ -113,34 +115,25 @@ export const Register = () => {
                                        <p className="text-red-500 text-sm">{!texterrors.Apellidos ? 'Apellidos invalido ' : ''}</p>
                                     
                                 </div>
-                                <div>
+                                <div className='relative'>
                                     <input 
                                         name="Contrasena" 
                                         className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.Contrasena ? `border-4 border-red-400` : ``}`}
-                                        type="password" 
+                                      type={showPassword ? 'text' : 'password'}
                                         placeholder="Contraseña*"
                                         value={formDataRegister.Contrasena}
                                         onChange={ handleChangeRegister}
-                                        //onKeyUp={clearErrors}
+                                        
                                     />
                                     
                                        <p className="text-red-500 text-sm">{!texterrors.Contrasena ? 'Contraseña invalido ' : ''}</p>
-                                    
+                                                             <div className="absolute top-5 right-1 cursor-pointer text-black hover:text-gray-800 bg-gray-100"
+                                                                            onClick={() => setShowPassword(!showPassword)}
+                                                                          >
+                                                                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                                          </div>
                                 </div>
-                                <div>
-                                    <input 
-                                        name="ConfirmarContrasena" 
-                                        className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.ConfirmarContrasena ? `border-4 border-red-400` : ``}`}
-                                        type="password" 
-                                        placeholder="Confirmar Contraseña*"
-                                        value={formDataRegister.ConfirmarContrasena}
-                                        onChange={ handleChangeRegister}
-                                        //onKeyUp={clearErrors}
-                                    />
-                                    
-                                        <p className="text-red-500 text-sm">{!texterrors.ConfirmarContrasena ? 'Confirmar Contraseña invalido ' : ''}</p>
-                                    
-                                </div>
+
 
                                 <div>
                                     <input 
@@ -224,7 +217,7 @@ export const Register = () => {
 
                                     
                                 </div>
-                               <div className="w-full border border-black border-dashed rounded-xl p-2 pt-6 mb-10">
+                               <div className="w-full border pb-5 border-black border-dashed rounded-xl p-2 pt-6 mb-10 col-span-2">
                                       <label className="font-bold text-blue-900 hover:text-blue-700">
                                          Subir Imagen de Perfil
                                     <input

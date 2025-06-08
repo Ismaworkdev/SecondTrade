@@ -1,6 +1,7 @@
 import React , {useEffect , useState} from 'react'
 import logo from '../../assets/logo.png'
 import { Nav } from "./Nav"
+import { Link } from 'react-router-dom'
 export const Header = () => {
     const [up , setup] = useState(!window.scrollY)
     const [Desplegado, setDesplegado] = useState(false);
@@ -10,12 +11,13 @@ export const Header = () => {
    
 
   return (
+
    <nav className={`fixed right-0 top-0 w-full z-20 transition duration-500 ease-in-out mb-7 ${up && 'bg-white shadow-lg' }`}>
     <div className="flex  justify-between items-center " >
-       <div className='flex flex-row justify-center md:px-12 md:mx-12 items-center text-center font-semibold'>
+       <Link to="/home" className='flex flex-row justify-center md:px-12 md:mx-12 items-center text-center font-semibold'>
         <img src={logo} alt="Logo" className='w-[100px]' />
        
-       </div>
+       </Link>
        <div className="group flex flex-col items-center ">
         <button className='p-2 rounded-lg lg:hidden text-blue-900' onClick={handleClick}>
             <svg className="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -27,7 +29,7 @@ export const Header = () => {
                 )}
             </svg>
         </button>
-        <div className="hidden lg:flex lg:items-center lg:space-x-4">
+        <div className="hidden lg:flex lg:items-center lg:space-x-4 pr-10">
             <Nav />
         </div>
 

@@ -42,7 +42,7 @@ class ImagenProductoController:
          return objeto
     
     def postImagen(imagen , current_user: dict , db):
-      print(imagen)
+      
       img_data = imagen.img
       img_bytes = None
 
@@ -97,21 +97,22 @@ class ImagenProductoController:
                     return JSONResponse(status_code=HTTP_400_BAD_REQUEST ,content="El correo no existe")
                 
                 else:
-                 resul = db.execute(ProductoModel.select().where((ProductoModel.c.IDProducto == IDProducto) & (ProductoModel.c.IDUsuario == current_user["id"]))).mappings().first()
+                      try:    
+                                resul = db.execute(ProductoModel.select().where((ProductoModel.c.IDProducto == IDProducto) & (ProductoModel.c.IDUsuario == current_user["id"]))).mappings().first()
 
-                 
-                 if resul == {}:
-                       
-                        return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "No se te permite agregar esta imagen"})
-                 else:
-                                         try: 
+                                
+                                if resul == {}:
+                                    
+                                        return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "No se te permite agregar esta imagen"})
+                                else:
+                                     
                                                 
-                
-                                                db.execute(ImagenProductoModel.delete().where(ImagenProductoModel.c.IDProducto == IDProducto))
-                                                db.commit()
-                                                return JSONResponse(status_code=HTTP_201_CREATED , content={"message": "Imagen eliminada correctamente"})
-                                         except Exception as e:
-                                                print(e)
-                                                return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al eliminar la imagen"})
-                     
+
+                                    db.execute(ImagenProductoModel.delete().where(ImagenProductoModel.c.IDProducto == IDProducto))
+                                    db.commit()
+                                    return JSONResponse(status_code=HTTP_201_CREATED , content={"message": "Imagen eliminada correctamente"})
+                      except Exception as e:
+                                print(e)
+                                return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al eliminar la imagen"})
+
                      

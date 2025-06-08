@@ -3,20 +3,20 @@ import { useParams } from 'react-router-dom'
 import { useOneProduct } from '../hooks/useOneProduct'
 import { useEditProducto } from '../hooks/useEditProducto'
 import { EditImageProducto } from './EditImageProducto'
+import { TaskHecho } from '../../Pages/TaskHecho'
 export const EditProducto = () => {
      const {idProducto} = useParams()
-     console.log(idProducto)
-     const { product } = useOneProduct({idProducto})
-    console.log("Edittttttttttt" ,product)
-    const {formDataEditProducto ,handelChangeRditProducto , errors , handelSubmitEditProduct , texterrors} = useEditProducto({ product})
-    console.log(formDataEditProducto)
+      const {product} = useOneProduct({idProducto})
    
+    const {formDataEditProducto ,handelChangeRditProducto , errors , handelSubmitEditProduct , texterrors , im , done} = useEditProducto({ product})
+ 
+  
      
   return (
 <div className="flex justify-center items-center mt-18 w-full bg-white py-12 lg:py-24">
   <div className="container min-w-[1000px] my-8 px-4 lg:px-20" data-aos="zoom-in">
-
-      <div className="w-full min-h-[500px] flex items-center justify-center bg-white p-12 my-4 md:px-12 lg:w-full mr-auto rounded-2xl shadow-2xl">
+   {done != null && done == true && <TaskHecho mensaje="¡Producto editado correctamente! " />}
+      <div className="w-full max-h-[1100px] flex items-center justify-center bg-white p-12 my-4 md:px-12 lg:w-full mr-auto rounded-2xl shadow-2xl">
         <div className="w-full">
           <div className="flex">
             <h1 className="font-bold text-center lg:text-left text-blue-900 text-4xl">
@@ -25,7 +25,7 @@ export const EditProducto = () => {
                             </div>
 
                             <div>
-                                <EditImageProducto product = {product}/>
+                                <EditImageProducto IDEP = {idProducto}/>
                             </div>
                          
                            <form noValidate onSubmit={handelSubmitEditProduct} >    
@@ -84,17 +84,14 @@ export const EditProducto = () => {
                                                     <select
                                                     name="Categoria"
                                                     className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.Categoria ? `border-4 border-red-400` : ``}`}
-                                                    Value={formDataEditProducto.Categoria}
+                                                    value={formDataEditProducto.Categoria}
                                                      onChange={handelChangeRditProducto}
                                                     >
-                                                    {formDataEditProducto.Categoria ? 
-                                                        <option value={formDataEditProducto.Categoria} >
-                                                         {`${formDataEditProducto.Categoria} * Categoria actual  del producto * `}
+                                                  
+                                                        <option value={product.Categoria} >
+                                                         {`${product.Categoria} * Categoria actual  del producto * `}
                                                         </option>
-                                                       :                                                        
-                                                        <option value='' >
-                                                          ''
-                                                        </option>}
+                                                      
                                                     <option value="Electrónica">Electrónica</option>
                                                     <option value="Ropa">Ropa</option>
                                                     <option value="Hogar">Hogar</option>
@@ -117,7 +114,7 @@ export const EditProducto = () => {
                                 
 
                              
-                              
+                                 <p className="text-red-500 text-sm">{  !im ? 'Debes subir al menos una Imagen del producto ' : ''}</p>
                         </div>
 
                         <div className="my-2">

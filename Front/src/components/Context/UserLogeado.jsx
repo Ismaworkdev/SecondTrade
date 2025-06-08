@@ -5,8 +5,16 @@ export const UserLogeadoContext = createContext();
 export const UserLogeado = ({ children }) => {
   const [userLogeado, setUserLogeado] = useState({});
   const [Imagenes , setImagenes] = useState([])
-  const [loading, setLoading] = useState(true); 
+  const [productos , setproductos] = useState([])
+  const [loading, setLoading] = useState(true);
+  const [   act , setact ] = useState(false)
+  const [conver , setconver] = useState([])
    const token = sessionStorage.getItem('token');
+       const [formDataBuscar, setformDataBuscar] = useState({
+      string : '' ,
+      Categoria: 'Todos'
+    })
+
     const getinfouser = async () => {
       if (token) {
         
@@ -34,7 +42,7 @@ export const UserLogeado = ({ children }) => {
 
 
   return (
-    <UserLogeadoContext.Provider value={{ userLogeado, setUserLogeado, loading , Imagenes , setImagenes }}>
+    <UserLogeadoContext.Provider value={{ getinfouser, formDataBuscar, setformDataBuscar,productos , setproductos , userLogeado, setUserLogeado, loading , Imagenes , setImagenes , setact , act ,conver , setconver}}>
       {children}
     </UserLogeadoContext.Provider>
   );

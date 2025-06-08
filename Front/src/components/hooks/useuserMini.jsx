@@ -9,12 +9,12 @@ export const useuserMini = ({idU}) => {
 
         const data = await fetch(`http://127.0.0.1:8000/usuario/UserProfile/${idU}`)
         .then((res) => res.json())
-       console.log("data", data)
+       
        setUser(data);
        
 
     }
-    console.log(User)
+ 
 const Postmg =async () => {
   setmg(!mg)
 let DateObj = new Date();
@@ -35,7 +35,7 @@ const abjeto = {
             }, body: JSON.stringify(abjeto),
           }).then((resul)=> {
             if(resul.ok){
-                console.log("posteado correctamente")
+                
             }
           })
     
@@ -48,7 +48,7 @@ const abjeto = {
             }, body: JSON.stringify(abjeto),
           }).then((resul)=> {
             if(resul.ok){
-                console.log("Elimiminado correctamente")
+              
             }
           })
   }
@@ -70,7 +70,7 @@ const getmg = async () => {
 }
     useEffect(() => {   
         getUser();
-        console.log("useUserMini", User , idU)
+    
         getmg();
     }, [idU]);
 

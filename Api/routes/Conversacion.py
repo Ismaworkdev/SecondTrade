@@ -11,6 +11,21 @@ from config.db import get_db
 route = APIRouter()
 namespace = "Conversacion"
 
+@route.get("/")
+def getConversaciones(  current_user : dict = Depends(get_current_user) ,db: Session = Depends(get_db)):
+    return ConversacionController.getConversaciones(  current_user , db) 
+
+@route.get("/{id}")
+def getConversacion( id : int , current_user : dict = Depends(get_current_user) ,db: Session = Depends(get_db)):
+    return ConversacionController.getConversacion( id , current_user , db) 
+
+@route.get("/max/")
+def getMaxid(   current_user : dict = Depends(get_current_user) ,db: Session = Depends(get_db)):
+    return ConversacionController.getMaxid( current_user , db) 
+
+@route.get("/exist/{idCon}")
+def getexist( idCon : int ,   current_user : dict = Depends(get_current_user) ,db: Session = Depends(get_db)):
+    return ConversacionController.getexist( idCon , current_user , db) 
 
 
 @route.post("/")

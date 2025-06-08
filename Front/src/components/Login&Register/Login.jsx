@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import  {UserLogeadoContext} from '../Context/UserLogeado'
 import {useLogin} from '../hooks/useLogin'
+import { Eye, EyeOff } from 'lucide-react';
 
 
 export const Login = () => {
-    const { handleChangeLogin, handleSubmitLogin, formDataLogin, errors, texterrors, Unauthorized } = useLogin()
+    const { handleChangeLogin, handleSubmitLogin, formDataLogin, errors, texterrors, Unauthorized , showPassword, setShowPassword  } = useLogin()
 ;
 
    
@@ -45,17 +46,21 @@ export const Login = () => {
                                         <p className="text-red-500 text-sm">{!texterrors.Gmail ? 'Gmail invalido ' : ''}</p>
                                     
                                 </div>
-                                <div>
+                                <div className='relative'>
                                     <input 
                                         name="Contrasena" 
                                         className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.Contrasena ? `border-4 border-red-400` : ``}`}
-                                        type="password" 
+                                         type={showPassword ? 'text' : 'password'}
                                         placeholder="Contraseña*"
                                         value={formDataLogin.Contrasena}
                                         onChange={ handleChangeLogin}
                                       
                                     />
-                                    
+                                       <div className="absolute top-5 right-1 cursor-pointer text-black hover:text-gray-800 bg-gray-100"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        </div>
                                         <p className="text-red-500 text-sm">{!texterrors.Contrasena ? 'Contraseña invalida ' : ''}</p>
                                        
                                     
@@ -73,6 +78,12 @@ export const Login = () => {
                                 No tienes cuenta? 
                                 <Link to="/Register" className="font-bold text-blue-900 hover:text-blue-700"> Registrate</Link>
                             </p>
+                             {!Unauthorized ? 
+                                                        <p className="text-sm text-center mt-4">
+                               ¿Has olvidado la contraseña?
+                                <Link to="/ForgotPassword" className="font-bold text-blue-900 hover:text-blue-700"> Recuperar Contraseña </Link>
+                            </p> : '' 
+                            }
                         </div>
                             </div>
                     </div>

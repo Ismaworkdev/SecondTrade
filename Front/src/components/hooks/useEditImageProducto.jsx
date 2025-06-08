@@ -1,6 +1,6 @@
 import React, { useEffect, useState , useContext } from 'react'
 import { UserLogeadoContext } from '../Context/UserLogeado';
-export const useEditImageProducto = ({imageProductos , product}) => {
+export const useEditImageProducto = ({imageProductos , IDEP}) => {
     const [ImageEdit, setImageEdit] = useState(new Array(5).fill(null));
     const [imgSubida , setimgsubida] =  useState(null)
      const {  Imagenes , setImagenes  } = useContext(UserLogeadoContext);
@@ -13,7 +13,7 @@ export const useEditImageProducto = ({imageProductos , product}) => {
         updated[index] = null;
         return updated; 
         });
-    console.log(ImageEdit)
+   
      
     }
 
@@ -34,32 +34,39 @@ const toBase64 = (file) =>
 
          const base64Img =  await toBase64(file);
         const imagen = {
-            IDProducto : product.IDProducto , 
+            IDProducto : IDEP , 
             img :base64Img
 
         }
         
-        if (ImageEdit.length +1 <= 5) {
-          console.log(ImageEdit.length)
-        setImageEdit(prev => {
-        const updated = [...prev];
-        updated[ImageEdit.length] = imagen;
-        return updated; 
-        });
-    console.log(ImageEdit)
-  
-            
-        }else{
-           console.log(ImageEdit)
-            console.log("no hay espaciooooooooooooooooooooooooo")
-        }
+if (true) { 
+  setImageEdit(prev => {
+    const updated = [...prev];
+    const nullIndex = updated.findIndex(item => item === null);
+
+    if (nullIndex !== -1) {
+     
+      updated[nullIndex] = imagen;
+    } else if (updated.length < 5) {
+     
+      updated.push(imagen);
+    } else {
+    
+      
+    
+    }
+
+    return updated;
+  });
+}
+
     }
    useEffect(()=>{
   setImageEdit(imageProductos)
-  console.log(ImageEdit)
+
    },[imageProductos])
       useEffect(()=>{
- console.log("hahhaha")
+
   setImagenes(ImageEdit)
    },[ImageEdit])
     return{ImageEdit , deleteImg , addImg , imgSubida}

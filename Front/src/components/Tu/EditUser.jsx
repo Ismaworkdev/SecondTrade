@@ -1,7 +1,9 @@
 import { useState, React, useEffect, use } from 'react';
 import { Navigate, useNavigate  , Link  } from "react-router-dom";
 import { MapContainer, TileLayer, useMapEvents, Marker  } from "react-leaflet";
+import { Eye, EyeOff } from 'lucide-react';
 import "leaflet/dist/leaflet.css";
+import { TaskHecho } from '../../Pages/TaskHecho';
 import L from "leaflet";
 import {useEditUser} from '../hooks/useEditUser';
 
@@ -21,7 +23,7 @@ export const EditUser = () => {
     getAdress , 
     errors, setErrors , 
     isregistered ,
-        putEdit,        } = useEditUser();
+        putEdit,  done   , showPassword, setShowPassword   } = useEditUser();
                      delete L.Icon.Default.prototype._getIconUrl;
                      L.Icon.Default.mergeOptions({
                        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -56,6 +58,7 @@ export const EditUser = () => {
  
 
 <div className="flex justify-center items-center mt-8 w-full  py-12 lg:py-24">
+    {done != null && done == true && <TaskHecho mensaje="¡Cambios Guardados Correctamente! " />}
   <div className="w-full max-w-7xl mx-auto my-8 px-4 lg:px-8" data-aos="zoom-in">
     <form noValidate onSubmit={handleSubmitEdit}>
       <div className="w-full bg-white p-8 my-4 md:px-12 lg:px-20 rounded-2xl shadow-2xl">
@@ -89,7 +92,7 @@ export const EditUser = () => {
                                         placeholder="Nombre*" 
                                         value={formDataEdit.Nombre}
                                         onChange={handleChangeEdit}
-                                        //onKeyUp={clearErrors}
+                                  
                                     />
                                   
                                          <p className="text-red-500 text-sm">{!texterrors.Nombre ? 'Nombre invalido ' : ''}</p>
@@ -110,34 +113,25 @@ export const EditUser = () => {
                                        <p className="text-red-500 text-sm">{!texterrors.Apellidos ? 'Apellidos invalido ' : ''}</p>
                                     
                                 </div>
-                                <div>
+                                <div className='relative'>
                                     <input 
                                         name="Contrasena" 
-                                        className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.Contrasena ? `border-4 border-red-400` : ``}`}
-                                        type="password" 
+                                        className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 pr-7 rounded-lg focus:outline-none focus:shadow-outline ${errors.Contrasena ? `border-4 border-red-400` : ``}`}
+                                         type={showPassword ? 'text' : 'password'}
                                         placeholder="Contraseña*"
                                         value={formDataEdit.Contrasena}
                                         onChange={ handleChangeEdit}
-                                        //onKeyUp={clearErrors}
+                                        
                                     />
                                     
                                        <p className="text-red-500 text-sm">{!texterrors.Contrasena ? 'Contraseña invalido ' : ''}</p>
-                                    
+                                          <div className="absolute top-5 right-1 cursor-pointer text-black hover:text-gray-800 bg-gray-100"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                      >
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                      </div>
                                 </div>
-                                <div>
-                                    <input 
-                                        name="ConfirmarContrasena" 
-                                        className={`w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.ConfirmarContrasena ? `border-4 border-red-400` : ``}`}
-                                        type="password" 
-                                        placeholder="Confirmar Contraseña*"
-                                        value={formDataEdit.ConfirmarContrasena}
-                                        onChange={ handleChangeEdit}
-                                        //onKeyUp={clearErrors}
-                                    />
-                                    
-                                        <p className="text-red-500 text-sm">{!texterrors.ConfirmarContrasena ? 'Confirmar Contraseña invalido ' : ''}</p>
-                                    
-                                </div>
+
 
                                 <div>
                                     <input 
@@ -222,21 +216,21 @@ export const EditUser = () => {
 
                                     
                                 </div>
-                                <div>
+                               <div className="w-full border pb-5 border-black border-dashed rounded-xl p-2 pt-6 mb-10 col-span-2">
+                                 <label className="font-bold text-blue-900 hover:text-blue-700">
+                                         Subir Imagen de Perfil
                                     <input
                                         name="ImgPerfil"
-                                        className={`w-full  bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.ImgPerfil ? `border-4 border-red-400` : ``}`}
+                                         className={`w-full hidden bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline ${errors.ImgPerfil ? `border-4 border-red-400` : ``}`}
                                         type="file"
                                         accept="image/*" 
                                         placeholder="Imagen de Perfil*"
                                         
                                         onChange={ handleChangeEdit}
-                                        
-
-                                       
-                                        
+    
                                     />
-                                    
+                                                                 </label> 
+
                                     <p className="text-red-500 text-sm">{!texterrors.ImgPerfil ? 'Imagen de Perfil  invalido ' : ''}</p>
 
                                     

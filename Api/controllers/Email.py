@@ -15,8 +15,8 @@ from dotenv import load_dotenv , dotenv_values
 load_dotenv()
 class EmailController:
     
-    def send_email(email: EmailSchema , current_user: dict , db):
-         if UsuarioController.getGmailUser(current_user["Gmail"] , db) == {}:
+    def send_email(email: EmailSchema  , db):
+         if UsuarioController.getGmailUser(email.email, db) == {}:
             return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
          else:
                 #SecondTrade

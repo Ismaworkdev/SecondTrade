@@ -10,7 +10,12 @@ from fastapi import APIRouter , Response , Depends
 from schemas.Usuario import InicioSesion as InicioSesionSchema
 from schemas.Usuario import Usuario as UsuarioSchema
 from sqlalchemy import select
-
+import requests
+from models.ImagenProducto import ImagenProducto as ImageProductoModel
+from models.ProductoFavorito import ProductoFavorito as ProductoFavoritoModel
+from models.Conversacion import Conversacion as ConversacionModel
+from models.Mensaje import Mensaje as MensajeModel
+from models.UsuarioFavorito import UsuarioFavorito as UsuarioFavoritoModel
 from datetime import datetime, timedelta
 import jwt
 from datetime import datetime, timedelta, timezone
@@ -25,7 +30,9 @@ import sys
 import base64
 from PIL import Image
 import io
-
+import os
+from dotenv import load_dotenv , dotenv_values
+load_dotenv()
 
 
 
@@ -35,10 +42,21 @@ class UsuarioController :
   
 
 
-  def getUsers( db):
-    resul = db.execute(UsuarioModel.select()).fetchall()
-    lista = [dict(row._mapping) for row in resul]
-    return lista
+  def getUsers( current_user: dict ,  db):
+        if current_user["id"] != 1 :  
+            return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "No autorizado"})
+        else:     
+            resul = db.execute(UsuarioModel.select()).fetchall()
+            lista = []
+            for row in resul :
+                interacion = dict(row._mapping)
+                
+                if interacion.get("ImgPerfil"):
+                    interacion["ImgPerfil"] = base64.b64encode(interacion["ImgPerfil"]).decode("utf-8")
+                    lista.append(interacion)
+                    
+            return lista
+            
   
   def getGmailUser(Gmail , db):
     stmt = select(UsuarioModel).where(UsuarioModel.c.Gmail == Gmail)
@@ -57,7 +75,8 @@ class UsuarioController :
         UsuarioModel.c.Nombre,
         UsuarioModel.c.ImgPerfil,
         UsuarioModel.c.Ciudad_Pueblo ,
-        UsuarioModel.c.Region
+        UsuarioModel.c.Region ,
+         UsuarioModel.c.IDUsuario
     ).where(UsuarioModel.c.IDUsuario == IDUsuario)
 
     resul = db.execute(stmt).mappings().first()
@@ -75,6 +94,7 @@ class UsuarioController :
             "ImgPerfil": img_base64,
             "Ciudad_Pueblo": objeto.get("Ciudad_Pueblo"),
             "Region": objeto.get("Region"),
+             "IDUsuario": objeto.get("IDUsuario"),
             
         }
 
@@ -83,18 +103,18 @@ class UsuarioController :
   
 
 
-  def procesar_imagen(base64_data: str, max_size_bytes=2 * 1024 * 1024):
+  def procesar_imagen(base64_data: str, max_size_bytes=10 * 1024 * 1024):
       try:
           image_data = base64.b64decode(base64_data)
           image = Image.open(io.BytesIO(image_data))
-          image.thumbnail((500, 500))  # Redimensionar
+          image.thumbnail((300,300 ))  # Redimensionar
 
           buffer = io.BytesIO()
-          image.save(buffer, format='JPEG', quality=85)  # Comprimir
+          image.save(buffer, format='JPEG', quality=100)  # Comprimir
           img_bytes = buffer.getvalue()
 
           if len(img_bytes) > max_size_bytes:
-              return None, "La imagen es demasiado grande (máx 2MB)."
+              return None, "La imagen es demasiado grande (máx 10MB)."
 
           return img_bytes, None
 
@@ -146,7 +166,19 @@ class UsuarioController :
             else:
                 db.execute(UsuarioModel.insert().values(new_user))
                 db.commit()
-                print("Usuario creado correctamente:",)
+                email = {
+                        "email": user.Gmail,
+                        "subject": "Acabas de registrarte en SecondTrade",
+                        "message":  f"Bienvenido {user.Nombre}"     
+                    }
+                response = requests.post("http://127.0.0.1:8000/email/", 
+                                             json=email, 
+                                             headers = {
+                                              "accept": "application/json",
+                                              "Content-Type": "application/json"
+                                            })
+                print("Código de estado:", response.status_code)
+                print("Respuesta del servidor:", response.text)
                 return JSONResponse(status_code=HTTP_200_OK, content={"message": "Usuario creado correctamente"})
 
       except Exception as e:
@@ -226,27 +258,42 @@ class UsuarioController :
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar el usuario"})
 
 
-#  def CambiarContrasena( user , current_user: dict) :
-#            if UsuarioController.getGmailUser(current_user["Gmail"]) == {}:
-#                return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
-#            else:   
-#              try:
-#                
-#                 if not UsuarioController.bcrypt_context.verify(user.Contrasena_antigua, UsuarioController.getGmailUser(current_user["Gmail"])["Contrasena"]):
-#                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "La contraseña antigua no es correcta"})
-#                 else:
-#                    updateContrasena = {
-#                      
-#                        "Contrasena": UsuarioController.bcrypt_context.hash(user.Contrasena_Nueva)
-#                    }
-#                    db.execute(UsuarioModel.update().values(updateContrasena).where(UsuarioModel.c.Gmail == current_user["Gmail"]))
-#                    db.commit()
-#                    return JSONResponse(status_code=HTTP_200_OK , content={"message": "Contraseña actualizada correctamente"})
-#                
-#                  
-#              except Exception as e:
-#                   
-#                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar la contraseña"})
+  def CambiarContrasena( Gmail , db) :
+            from .Email import EmailController
+            if UsuarioController.getGmailUser(Gmail , db) == {}:
+                return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
+            else:   
+              try:
+                
+                    Temporal = os.getenv("Temporal")  
+
+                    updateContrasena = {
+                      
+                        "Contrasena": UsuarioController.bcrypt_context.hash(Temporal)
+                    }
+                    db.execute(UsuarioModel.update().values(updateContrasena).where(UsuarioModel.c.Gmail == Gmail))
+                    db.commit()
+                    email = {
+                        "email": Gmail,
+                        "subject": "Recuperación de Contraseña",
+                        "message":    f"Tu contraseña temporal de recuperación es: {Temporal}\n"     
+                    }
+                    response = requests.post("http://127.0.0.1:8000/email/", 
+                                             json=email, 
+                                             headers = {
+                                              "accept": "application/json",
+                                              "Content-Type": "application/json"
+                                            })
+                    print("Código de estado:", response.status_code)
+                    print("Respuesta del servidor:", response.text)
+
+                    return JSONResponse(status_code=HTTP_200_OK , content={"message": "Contraseña actualizada correctamente"})
+                   
+                  
+              except Exception as e:
+                    print(e)
+                   
+                    return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al actualizar la contraseña"})
 
 
 
@@ -263,14 +310,141 @@ class UsuarioController :
     if UsuarioController.getGmailUser(current_user["Gmail"] , db) == {}:
         return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "El correo no existe"})
     else:
-        try:
-            db.execute(UsuarioModel.delete().where(UsuarioModel.c.Gmail == current_user["Gmail"]))
-            db.commit()
-            return JSONResponse(status_code=HTTP_200_OK , content={"message": "Usuario eliminado correctamente"})
-        except Exception as e:
         
-            return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al eliminar el usuario"})
+        
+        #try:  
+              subq_productos = select(ProductoModel.c.IDProducto).where(
+                  ProductoModel.c.IDUsuario == current_user["id"]
+              ).scalar_subquery()
+
+              # Subquery de conversaciones asociadas al usuario (por producto o directamente)
+              subq_conversaciones = select(ConversacionModel.c.IDConversacion).where(
+                 
+                  (ConversacionModel.c.IDUsuarioComprador == current_user["id"]) |
+                  (ConversacionModel.c.IDUsuarioVendedor == current_user["id"])
+              ).scalar_subquery()
+
+              # 1. Eliminar mensajes que pertenezcan a esas conversaciones
+              db.execute(MensajeModel.delete().where(
+                  MensajeModel.c.IDConversacion.in_(subq_conversaciones)
+              ))
+
+              # 2. Eliminar imágenes de productos
+              db.execute(ImageProductoModel.delete().where(
+                  ImageProductoModel.c.IDProducto.in_(subq_productos)
+              ))
+
+              # 3. Eliminar favoritos relacionados
+                # 3. Eliminar favoritos relacionados
+              db.execute(UsuarioFavoritoModel.delete().where(
+                        UsuarioFavoritoModel.c.IDUsuario == current_user["id"]
+              ))
   
+              db.execute(ProductoFavoritoModel.delete().where(
+                    ProductoFavoritoModel.c.IDProducto.in_(subq_productos)
+              ))
+              db.execute(ProductoFavoritoModel.delete().where(  # <-- ESTA ES LA LÍNEA NUEVA
+                    ProductoFavoritoModel.c.IDUsuario == current_user["id"]
+              ))
+              db.execute(UsuarioFavoritoModel.delete().where(
+                    UsuarioFavoritoModel.c.IDUsuarioGustado == current_user["id"]
+              ))
+
+
+              # 4. Eliminar conversaciones (ya sin mensajes)
+              db.execute(ConversacionModel.delete().where(
+                  (ConversacionModel.c.IDProducto.in_(subq_productos)) |
+                  (ConversacionModel.c.IDUsuarioComprador == current_user["id"]) |
+                  (ConversacionModel.c.IDUsuarioVendedor == current_user["id"])
+              ))
+
+              # 5. Eliminar productos
+              db.execute(ProductoModel.delete().where(
+                  ProductoModel.c.IDUsuario == current_user["id"]
+              ))
+
+              # 6. Eliminar usuario
+              db.execute(UsuarioModel.delete().where(
+                  UsuarioModel.c.Gmail == current_user["Gmail"]
+              ))
+
+              # 7. Confirmar transacción
+              db.commit()
+        #except Exception as e:
+         #print(e)
+    
+         #return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al elimiar Usuario"})      
+
+  def deleteUseradmin( IDusuario , current_user: dict , db):
+        if current_user["id"] != 1:
+            return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "No autorizado"})
+        else:
+            
+         try:
+                subq_productos = select(ProductoModel.c.IDProducto).where(
+                    ProductoModel.c.IDUsuario == IDusuario
+                ).scalar_subquery()
+
+                # Subquery de conversaciones asociadas al usuario (por producto o directamente)
+                subq_conversaciones = select(ConversacionModel.c.IDConversacion).where(
+                    
+                    (ConversacionModel.c.IDUsuarioComprador == IDusuario) |
+                    (ConversacionModel.c.IDUsuarioVendedor == IDusuario)
+                ).scalar_subquery()
+
+                # 1. Eliminar mensajes que pertenezcan a esas conversaciones
+                db.execute(MensajeModel.delete().where(
+                    MensajeModel.c.IDConversacion.in_(subq_conversaciones)
+                ))
+
+                # 2. Eliminar imágenes de productos
+                db.execute(ImageProductoModel.delete().where(
+                    ImageProductoModel.c.IDProducto.in_(subq_productos)
+                ))
+
+                # 3. Eliminar favoritos relacionados
+                db.execute(UsuarioFavoritoModel.delete().where(
+                            UsuarioFavoritoModel.c.IDUsuario == IDusuario
+                ))
+    
+                db.execute(ProductoFavoritoModel.delete().where(
+                        ProductoFavoritoModel.c.IDProducto.in_(subq_productos)
+                ))
+                db.execute(ProductoFavoritoModel.delete().where(  
+                        ProductoFavoritoModel.c.IDUsuario == IDusuario
+                ))
+                db.execute(UsuarioFavoritoModel.delete().where(
+                        UsuarioFavoritoModel.c.IDUsuarioGustado == IDusuario
+                ))
+
+                # 4. Eliminar conversaciones (ya sin mensajes)
+                db.execute(ConversacionModel.delete().where(
+                    (ConversacionModel.c.IDProducto.in_(subq_productos)) |
+                    (ConversacionModel.c.IDUsuarioComprador == IDusuario) |
+                    (ConversacionModel.c.IDUsuarioVendedor == IDusuario)
+                ))
+
+                # 5. Eliminar productos
+                db.execute(ProductoModel.delete().where(
+                    ProductoModel.c.IDUsuario == IDusuario
+                ))
+
+                # 6. Eliminar usuario
+                db.execute(UsuarioModel.delete().where(
+                    UsuarioModel.c.IDUsuario == IDusuario
+                ))
+
+                # 7. Confirmar transacción
+                db.commit()
+         except Exception as e:
+           print(e)
+    
+           return JSONResponse(status_code=HTTP_400_BAD_REQUEST , content={"message": "Error al elimiar Usuario"})      
+
+
+
+
+
 
 
 

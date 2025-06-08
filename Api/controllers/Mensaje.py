@@ -1,5 +1,6 @@
 from fastapi import WebSocket, WebSocketDisconnect
-
+from sqlalchemy import select, func
+import json
 from models.Mensaje import Mensaje as MensajeModel
 from schemas.Mensaje import Mensaje as MensajeSchema
 from datetime import date
@@ -22,10 +23,8 @@ class MensajeController:
             return lista
 
     @staticmethod
-    async def postMensaje(websocket: WebSocket, IDConversacion: int, current_user: dict , db):
-        if UsuarioController.getGmailUser(current_user["Gmail"] , db) == {}:
-            return JSONResponse(status_code=400 , content={"message": "Usuario no encontrado"})
-        else:
+    async def postMensaje(websocket: WebSocket, IDConversacion: int ,IDUsuario , db):
+
                     await websocket.accept()
 
                 
@@ -38,7 +37,7 @@ class MensajeController:
                             data = await websocket.receive_text()
                             mensaje = MensajeSchema(
                                 IDConversacion=IDConversacion,
-                                IDUsuario=current_user["id"],
+                                IDUsuario=IDUsuario,
                                 Mensaje=data,
                                 FechayHora=date.today()
                             )
@@ -53,14 +52,23 @@ class MensajeController:
                                 )
                             )
                             db.commit()
+                            payload = {
+                                "IDConversacion": mensaje.IDConversacion,
+                                "IDUsuario": mensaje.IDUsuario,
+                                "Mensaje": mensaje.Mensaje,
+                                "FechayHora": mensaje.FechayHora.isoformat()
+                            }
 
                         
                             for connection in active_connections[IDConversacion]:
-                                await connection.send_text(f"Usuario {current_user["id"]}: {mensaje.Mensaje}")
+                                await connection.send_json(payload)
+
 
                     except WebSocketDisconnect:
-                        print(f"Usuario {current_user["id"]} se desconectó de la conversación {IDConversacion}")
+                        print(f"Usuario {IDUsuario} se desconectó de la conversación {IDConversacion}")
                     
                         active_connections[IDConversacion].remove(websocket)
                         if not active_connections[IDConversacion]:
                             del active_connections[IDConversacion]
+                                
+   

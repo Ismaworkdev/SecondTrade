@@ -9,15 +9,14 @@ import {UserMini} from './UserMini'
 export const Producto = () => {
 
     const {idProducto} = useParams()
-    const { product , mg , Postmg , show , deleteProducto } = useOneProduct({idProducto})
+    const { product , mg , Postmg , show , deleteProducto ,  PostConver } = useOneProduct({idProducto})
 
-    const { imageProductos } = useImageProducto({  product});
+    const { imageProductos } = useImageProducto({ IDEP : product.IDProducto});
    
   return (
     <div>
 <div className="block w-[800px] mx-auto rounded-xl overflow-hidden shadow-lg">
 
-  {/* Imagen sin bordes */}
   <div className="w-full h-96 sm:h-[30rem]">
     <Carrusel imageProductos={imageProductos} />
 
@@ -30,8 +29,8 @@ export const Producto = () => {
   <div>
     
 
-  {/* Contenido mejorado */}
-  <div className="bg-gray-200 p-8">
+  
+  <div className="bg-gray-400 rounded-xl p-8">
  
 {  show ? 
    <div className="bg-gray-100 p-5 pb-8 rounded-2xl shadow-md  justify-between flex items-center">
@@ -51,7 +50,8 @@ export const Producto = () => {
     
 <div className='bg-gray-100 p-4 rounded-2xl shadow-md '>
       <h2 className="text-gray-800 text-start  text-3xl">{product.Titulo}</h2>
-    <p className="font-montserratMedium text-gray-600 mt-4 text-start text-lg">{product.Descripcion}</p>
+    <p className="font-montserratMedium text-gray-600 mt-4 text-start text-lg max-w-[700px]">{product.Descripcion}</p>
+    <p className="font-montserratMedium text-gray-600 mt-4 text-start text-lg">{product.Categoria}</p>
     <div className="flex items-center justify-between mt-6">
       <p className="font-montserratRegular text-2xl tracking-wide text-gray-700">{product.Precio} €</p>
       {mg ? <svg onClick={Postmg}  className='w-10' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ff0000" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>   
@@ -63,15 +63,17 @@ export const Producto = () => {
   <UserMini idU = {product.IDUsuario}/>
 
  </div>
-    {/* Botón azul mejorado */}
+
+    {  !show ? 
     <div className="mt-8">
-      <a className="text-white bg-blue-900 hover:bg-blue-800 inline-flex items-center justify-center w-full px-6 py-3 my-4 text-lg shadow-xl rounded-xl ">
+      <p onClick={PostConver} className="text-white bg-blue-900 hover:bg-blue-800 inline-flex items-center justify-center w-full px-6 py-3 my-4 text-lg shadow-xl rounded-xl ">
         Enviar Mensaje al Vendedor 
         <svg className="w-6 h-6 ml-3 transform transition-transform group-hover:translate-x-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
         </svg>
-      </a>
+      </p>
     </div>
+    : ''}
   </div>
 </div>
 
