@@ -53,7 +53,8 @@ SecondTrade/
 
 3. **Ejecutar API**
 
-   - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden 
+   - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden
+     
       cd api  
       python -m venv venv  
       .\venv\Scripts\Activate.ps1      
@@ -61,7 +62,8 @@ SecondTrade/
       uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 4. **Ejecutar Frontend**
-   - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden 
+   - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden
+     
    cd Front
    npm install
    npm run dev  
