@@ -47,17 +47,17 @@ class ProductoController:
         # Consulta base
         query = ProductoModel.select()
 
-        # Filtrar por categoría si no es "Todos"
+        # Filtrar por categoria
         if Categoria != "Todos":
             query = query.where(func.lower(ProductoModel.c.Categoria) == Categoria.lower())
 
-        # Si string es None o vacío, devolver sin aplicar filtros de búsqueda
+        # Si string es None o vacio
         if  string == "all":
             resul = db.execute(query).fetchall()
             return [dict(row._mapping) for row in resul]
         else :
 
-            # Eliminar puntuación y preposiciones
+            #  preposiciones
             preposiciones = ["a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante",
                             "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según",
                             "sin", "so", "sobre", "tras"]
@@ -66,7 +66,7 @@ class ProductoController:
             palabras = string_limpio.split()
             palabras_filtradas = [p for p in palabras if p not in preposiciones]
 
-            # Condiciones de búsqueda
+            # Condiciones 
             condiciones = []
             for palabra in palabras_filtradas:
                 condiciones.append(or_(
