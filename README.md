@@ -65,7 +65,9 @@ SecondTrade/
    - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden
      
    cd Front
+   
    npm install
+   
    npm run dev  
 
 
