@@ -51,26 +51,20 @@ SecondTrade/
    - Crea una base de datos llamada `secondtrade`
    - Asegúrate de que el admin tenga ID = 1 en la tabla usuario
 
-3. **Configurar API**
-   ```bash
-   cd Api
-   python -m venv venv
-   .\venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-   - Crea tu propio archivo `.env` en la carpeta Api/
+3. **Ejecutar API**
 
-4. **Configurar Frontend**
-   ```bash
+   - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden 
+      cd api  
+      python -m venv venv  
+      .\venv\Scripts\Activate.ps1      
+      pip install -r requirements.txt 
+      uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+4. **Ejecutar Frontend**
+   - Ubicate en la raiz de Secondtrade y pon los siguientes comandos en orden 
    cd Front
    npm install
-   ```
+   npm run dev  
 
-### Ejecutar en Desarrollo
 
-```powershell
-.\start-dev.ps1
-```
-
-El script activa el entorno virtual, ejecuta la API y después el Frontend. Presiona Ctrl+C para detener ambos servicios.
 
